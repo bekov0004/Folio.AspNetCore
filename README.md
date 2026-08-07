@@ -5,6 +5,42 @@ alternative to Swagger UI and Scalar. The same UI as
 [Spectra](https://github.com/), packaged as middleware: no separate
 infrastructure, no static hosting — just a NuGet package.
 
+## Screenshots
+
+*Rendered from a sample e-commerce API spec — see [`docs/demo-openapi.json`](docs/demo-openapi.json).*
+
+**Endpoint list, model catalog and a request in flight:**
+
+![Welcome screen](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/01-home.png)
+
+**Query parameters, headers from the spec, and the generated response schema:**
+
+![GET endpoint](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/02-endpoint-get.png)
+
+**Type-aware request body builder with nested objects and multiple response codes:**
+
+![POST endpoint with request body](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/03-endpoint-post-body.png)
+
+**Executing a request from the browser — status, timing, headers and generated cURL:**
+
+![Executed response](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/04-execute-response.png)
+
+**Full model catalog, resolved and searchable:**
+
+![Model catalog](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/05-schema-models.png)
+
+**Authorization against the spec's security schemes:**
+
+![Authorize modal](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/06-authorize.png)
+
+**Instant endpoint search:**
+
+![Search](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/07-search.png)
+
+**Dark mode:**
+
+![Dark mode](https://raw.githubusercontent.com/bekov0004/Spectra/main/docs/screenshots/08-dark-mode.png)
+
 ## Installation
 
 ```bash
