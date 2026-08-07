@@ -1,25 +1,24 @@
 # Spectra.AspNetCore
 
-Встраиваемый в ASP.NET Core интерфейс документации и тестирования OpenAPI —
-альтернатива Swagger UI и Scalar. Тот же UI, что и в
-[Spectra](https://github.com/), упакованный как middleware: никакой
-отдельной инфраструктуры, никакого статического хостинга — просто
-NuGet-пакет.
+An embeddable OpenAPI documentation and testing UI for ASP.NET Core — an
+alternative to Swagger UI and Scalar. The same UI as
+[Spectra](https://github.com/), packaged as middleware: no separate
+infrastructure, no static hosting — just a NuGet package.
 
-## Установка
+## Installation
 
 ```bash
 dotnet add package Spectra.AspNetCore
 ```
 
-## Использование
+## Usage
 
-Пакет ничего не знает о том, как вы генерируете OpenAPI-документ — он
-только отображает то, что вы укажете в `SpecUrl`. Подходит любой источник:
-встроенный `Microsoft.AspNetCore.OpenApi`, Swashbuckle, NSwag или статический
-файл.
+The package doesn't care how you generate your OpenAPI document — it just
+renders whatever you point it at via `SpecUrl`. Any source works: the
+built-in `Microsoft.AspNetCore.OpenApi`, Swashbuckle, NSwag, or a static
+file.
 
-### С встроенным Microsoft.AspNetCore.OpenApi (.NET 9+)
+### With built-in Microsoft.AspNetCore.OpenApi (.NET 9+)
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -27,24 +26,24 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.MapOpenApi(); // публикует /openapi/v1.json
+app.MapOpenApi(); // publishes /openapi/v1.json
 
 app.UseSpectra(options =>
 {
-    options.RoutePrefix = "docs";           // UI будет на /docs
+    options.RoutePrefix = "docs";           // UI will be at /docs
     options.SpecUrl     = "/openapi/v1.json";
-    options.Title       = "My API";          // необязательно
+    options.Title       = "My API";          // optional
 });
 
 app.Run();
 ```
 
-### Со Swashbuckle
+### With Swashbuckle
 
 ```csharp
 builder.Services.AddSwaggerGen();
 // ...
-app.UseSwagger(); // публикует /swagger/v1/swagger.json
+app.UseSwagger(); // publishes /swagger/v1/swagger.json
 
 app.UseSpectra(options =>
 {
@@ -52,35 +51,38 @@ app.UseSpectra(options =>
 });
 ```
 
-Откройте `/docs` (или заданный `RoutePrefix`) — увидите список эндпоинтов,
-схему моделей, конструктор запросов по типам полей, выполнение запросов
-прямо из браузера с генерацией cURL, поддержку окружений и авторизации по
-security schemes спецификации (`apiKey`, HTTP Bearer/Basic).
+Open `/docs` (or your configured `RoutePrefix`) — you'll see the endpoint
+list, model schemas, a type-aware request builder, in-browser request
+execution with generated cURL, environment support, and authorization
+against the spec's security schemes (`apiKey`, HTTP Bearer/Basic).
 
-## Опции (`SpectraOptions`)
+## Options (`SpectraOptions`)
 
-| Свойство      | По умолчанию         | Описание                                                              |
-|---------------|-----------------------|------------------------------------------------------------------------|
-| `RoutePrefix` | `"spectra"`           | Путь, под которым откроется UI (без слэшей по краям).                 |
-| `SpecUrl`     | `"/openapi/v1.json"`  | Адрес OpenAPI-документа — обязателен для реального проекта.           |
-| `Title`       | `null`                | Заголовок страницы/шапки. Если не задан — берётся `info.title` спека. |
+| Property      | Default               | Description                                                          |
+|---------------|------------------------|------------------------------------------------------------------------|
+| `RoutePrefix` | `"spectra"`           | Path the UI is served under (no leading/trailing slashes).            |
+| `SpecUrl`     | `"/openapi/v1.json"`  | URL of the OpenAPI document — required for a real project.            |
+| `Title`       | `null`                | Page/header title. Falls back to the spec's `info.title` if not set.  |
 
-## Как это устроено
+## How it works
 
-UI (HTML/CSS/JS) встроен в сборку пакета как embedded-ресурсы и раздаётся
-через штатный `StaticFileMiddleware` поверх `ManifestEmbeddedFileProvider` —
-с корректными `ETag`/`Last-Modified`/условными запросами, без самодельной
-раздачи файлов. `index.html` отдаётся отдельным лёгким обработчиком, который
-на лету подставляет конфигурацию (`SpecUrl`, `Title`) в `<script>` перед
-загрузкой остальных скриптов — сам UI ничего не хардкодит и работает с
-любым OpenAPI-документом, который вы укажете.
+The UI (HTML/CSS/JS) is embedded into the package assembly as embedded
+resources and served through the standard `StaticFileMiddleware` on top of
+a `ManifestEmbeddedFileProvider` — with proper `ETag`/`Last-Modified`/
+conditional requests, not hand-rolled file serving. `index.html` is served
+by a small dedicated handler that injects configuration (`SpecUrl`, `Title`)
+into a `<script>` tag on the fly before the rest of the scripts load — the
+UI itself hardcodes nothing and works with whatever OpenAPI document you
+point it at.
 
-Источник статики пакета — тот же `htdocs`, что и у standalone-прототипа
-Spectra: один набор файлов, без ручного дублирования между репозиториями.
+The package's static assets come from the same `htdocs` as the standalone
+Spectra prototype: a single set of files, no manual duplication between
+repositories.
 
-## Требования
+## Requirements
 
-- ASP.NET Core, .NET 8 или .NET 9.
-- Интернет не нужен вообще: шрифты, Tailwind CSS, marked.js и flatpickr
-  собраны локально и встроены в сборку пакета вместе с остальным UI — ни
-  одного внешнего запроса ни при сборке проекта, ни в браузере пользователя.
+- ASP.NET Core, .NET 8 or .NET 9.
+- No internet connection required at all: fonts, Tailwind CSS, marked.js,
+  and flatpickr are all bundled locally and embedded into the package
+  assembly along with the rest of the UI — zero external requests, both at
+  build time and in the user's browser.
