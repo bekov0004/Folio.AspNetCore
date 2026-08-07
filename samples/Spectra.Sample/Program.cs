@@ -16,8 +16,8 @@ app.UseSpectra(options =>
 
 app.MapGet("/api/hello", (string? name) => Results.Ok(new { message = $"Hello, {name ?? "world"}!" }))
     .WithName("SayHello")
-    .WithSummary("Приветствие")
-    .WithDescription("Возвращает приветственное сообщение.");
+    .WithSummary("Greeting")
+    .WithDescription("Returns a greeting message.");
 
 app.MapGet("/api/items/{id:int}", (int id) => Results.Ok(new { id, name = $"Item {id}" }))
     .WithName("GetItemById");

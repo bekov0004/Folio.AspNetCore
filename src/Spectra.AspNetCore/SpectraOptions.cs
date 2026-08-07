@@ -1,26 +1,26 @@
 namespace Spectra.AspNetCore;
 
 /// <summary>
-/// Настройки UI Spectra, задаются в <see cref="SpectraMiddlewareExtensions.UseSpectra"/>.
+/// Spectra UI settings, configured in <see cref="SpectraMiddlewareExtensions.UseSpectra"/>.
 /// </summary>
 public sealed class SpectraOptions
 {
     /// <summary>
-    /// Путь, под которым будет доступен UI (без ведущего и завершающего слэша).
-    /// По умолчанию — "spectra", т.е. UI откроется на "/spectra".
+    /// The path the UI will be served under (no leading or trailing slash).
+    /// Defaults to "spectra", i.e. the UI opens at "/spectra".
     /// </summary>
     public string RoutePrefix { get; set; } = "spectra";
 
     /// <summary>
-    /// URL документа OpenAPI (JSON), который UI загрузит и отобразит.
-    /// Может быть как относительным ("/openapi/v1.json"), так и абсолютным.
-    /// Обязателен для указания — без него UI не сможет загрузить спецификацию.
+    /// URL of the OpenAPI (JSON) document the UI will fetch and render.
+    /// Can be relative ("/openapi/v1.json") or absolute.
+    /// Required — without it the UI has nothing to load.
     /// </summary>
     public string SpecUrl { get; set; } = "/openapi/v1.json";
 
     /// <summary>
-    /// Заголовок страницы и текст в шапке UI. Если не задан — используется
-    /// заголовок ("info.title") из самой OpenAPI-спецификации после её загрузки.
+    /// Page title and header text for the UI. If not set, falls back to the
+    /// OpenAPI spec's own title ("info.title") once it's loaded.
     /// </summary>
     public string? Title { get; set; }
 }

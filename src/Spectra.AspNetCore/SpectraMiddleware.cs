@@ -13,11 +13,11 @@ using Microsoft.Extensions.Options;
 namespace Spectra.AspNetCore;
 
 /// <summary>
-/// Отдаёт встроенный в сборку UI Spectra: index.html (с подставленным
-/// конфигом — URL спецификации и заголовок) и статику (css/js) —
-/// через штатный <see cref="StaticFileMiddleware"/>, настроенный поверх
-/// эмбеддед-ресурсов сборки, для честного кеширования/условных запросов
-/// вместо самодельной раздачи файлов.
+/// Serves the Spectra UI embedded in the assembly: index.html (with the
+/// config — spec URL and title — injected) and static assets (css/js) —
+/// through the standard <see cref="StaticFileMiddleware"/> configured on
+/// top of the assembly's embedded resources, for proper caching/conditional
+/// requests instead of hand-rolled file serving.
 /// </summary>
 public sealed class SpectraMiddleware
 {
@@ -27,8 +27,8 @@ public sealed class SpectraMiddleware
     private readonly byte[] _indexHtmlBytes;
 
     /// <summary>
-    /// Создаётся фреймворком через <c>UseMiddleware&lt;SpectraMiddleware&gt;</c> —
-    /// вызывать напрямую не нужно, используйте <see cref="SpectraMiddlewareExtensions.UseSpectra"/>.
+    /// Created by the framework via <c>UseMiddleware&lt;SpectraMiddleware&gt;</c> —
+    /// don't call this directly, use <see cref="SpectraMiddlewareExtensions.UseSpectra"/>.
     /// </summary>
     public SpectraMiddleware(
         RequestDelegate next,
@@ -58,7 +58,7 @@ public sealed class SpectraMiddleware
         _indexHtmlBytes = BuildIndexHtml(fileProvider, options);
     }
 
-    /// <summary>Точка входа конвейера ASP.NET Core middleware.</summary>
+    /// <summary>Entry point of the ASP.NET Core middleware pipeline.</summary>
     public async Task Invoke(HttpContext httpContext)
     {
         var request = httpContext.Request;
@@ -69,8 +69,8 @@ public sealed class SpectraMiddleware
             return;
         }
 
-        // Без завершающего слэша относительные пути ("css/layout.css")
-        // внутри index.html разрешились бы мимо префикса — редиректим.
+        // Without a trailing slash, relative paths ("css/layout.css") inside
+        // index.html would resolve outside the prefix — redirect instead.
         if (remaining == PathString.Empty && request.Path.Value is { } p && !p.EndsWith('/'))
         {
             var target = request.PathBase + request.Path + "/" + request.QueryString;
@@ -103,8 +103,8 @@ public sealed class SpectraMiddleware
         if (!fileInfo.Exists)
         {
             throw new InvalidOperationException(
-                "Встроенный ресурс 'wwwroot/index.html' не найден в сборке Spectra.AspNetCore. " +
-                "Пакет собран некорректно.");
+                "Embedded resource 'wwwroot/index.html' was not found in the Spectra.AspNetCore assembly. " +
+                "The package appears to be built incorrectly.");
         }
 
         string html;

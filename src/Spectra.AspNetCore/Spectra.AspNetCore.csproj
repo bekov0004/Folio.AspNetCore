@@ -34,11 +34,12 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-  <!-- UI-статика встраивается напрямую из Spectra-Prototype/htdocs — единый
-       источник правды для standalone-прототипа и NuGet-пакета, без ручного
-       копирования файлов между репозиториями. Спек-файлы (*.json в корне
-       htdocs) — тестовые данные самого прототипа, в пакет не идут: реальный
-       спек всегда предоставляет хост-приложение через SpectraOptions.SpecUrl. -->
+  <!-- UI assets are embedded directly from Spectra-Prototype/htdocs — a
+       single source of truth for both the standalone prototype and the
+       NuGet package, no manual file copying between repos. The spec files
+       (*.json at the root of htdocs) are the prototype's own test data and
+       are not included in the package: the real spec is always supplied by
+       the host app via SpectraOptions.SpecUrl. -->
   <ItemGroup>
     <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/index.html">
       <Link>wwwroot/index.html</Link>
@@ -49,8 +50,8 @@
     <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/js/**/*.js">
       <Link>wwwroot/js/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </EmbeddedResource>
-    <!-- Самостоятельно захостенные шрифты (Google Fonts) — UI не делает
-         ни одного внешнего запроса, полностью работает офлайн. -->
+    <!-- Self-hosted fonts (Google Fonts) — the UI makes zero external
+         requests and works fully offline. -->
     <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/fonts/**/*.woff2">
       <Link>wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </EmbeddedResource>

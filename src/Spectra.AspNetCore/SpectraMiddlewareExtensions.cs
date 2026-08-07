@@ -2,17 +2,17 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Spectra.AspNetCore;
 
-/// <summary>Точка подключения UI Spectra к конвейеру ASP.NET Core.</summary>
+/// <summary>Wires the Spectra UI into the ASP.NET Core pipeline.</summary>
 public static class SpectraMiddlewareExtensions
 {
     /// <summary>
-    /// Подключает UI Spectra — интерфейс документации и тестирования OpenAPI.
+    /// Adds the Spectra UI — an OpenAPI documentation and testing interface.
     /// </summary>
-    /// <param name="app">Конвейер приложения.</param>
+    /// <param name="app">The application pipeline builder.</param>
     /// <param name="configure">
-    /// Настройка <see cref="SpectraOptions"/>: как минимум нужно указать
-    /// <see cref="SpectraOptions.SpecUrl"/> — адрес вашего OpenAPI-документа
-    /// (например, от Swashbuckle или встроенного Microsoft.AspNetCore.OpenApi).
+    /// Configures <see cref="SpectraOptions"/>: at minimum you must set
+    /// <see cref="SpectraOptions.SpecUrl"/> — the URL of your OpenAPI document
+    /// (e.g. from Swashbuckle or the built-in Microsoft.AspNetCore.OpenApi).
     /// </param>
     /// <example>
     /// <code>
@@ -34,7 +34,7 @@ public static class SpectraMiddlewareExtensions
         if (string.IsNullOrWhiteSpace(options.SpecUrl))
         {
             throw new ArgumentException(
-                $"{nameof(SpectraOptions.SpecUrl)} обязателен — укажите адрес OpenAPI-документа вашего приложения.",
+                $"{nameof(SpectraOptions.SpecUrl)} is required — set it to your app's OpenAPI document URL.",
                 nameof(configure));
         }
 
