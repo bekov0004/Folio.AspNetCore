@@ -1,12 +1,8 @@
 # Folio.AspNetCore
 
-An embeddable OpenAPI documentation and testing UI for ASP.NET Core — an
-alternative to Swagger UI and Scalar, packaged as middleware: no separate
-infrastructure, no static hosting — just a NuGet package.
-
-Built on top of the [Spectra](https://github.com/bekov0004/SpectraPrototype)
-UI (the package is distributed as `Folio.AspNetCore` because the `Spectra`
-name was already taken on NuGet.org by an unrelated project).
+An embeddable OpenAPI documentation and testing UI for ASP.NET Core,
+packaged as middleware: no separate infrastructure, no static hosting —
+just a NuGet package.
 
 ## Screenshots
 
@@ -114,8 +110,8 @@ into a `<script>` tag on the fly before the rest of the scripts load — the
 UI itself hardcodes nothing and works with whatever OpenAPI document you
 point it at.
 
-The package's static assets come from the same `htdocs` as the standalone
-Spectra prototype: a single set of files, no manual duplication between
+The package's static assets are built from a single source tree shared
+with the standalone version of the UI, with no manual duplication between
 repositories.
 
 ## Requirements

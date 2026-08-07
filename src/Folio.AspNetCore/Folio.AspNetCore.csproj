@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <IsPackable>true</IsPackable>
-    <!-- SpectraClientConfig is serialize-only (never deserialized), so the
+    <!-- FolioClientConfig is serialize-only (never deserialized), so the
          init-only-properties warning from the JSON source generator is a
          false positive on older TFMs. -->
     <NoWarn>$(NoWarn);SYSLIB1037</NoWarn>
@@ -17,7 +17,7 @@
     <PackageId>Folio.AspNetCore</PackageId>
     <Version>1.0.0</Version>
     <Authors>Anushervon</Authors>
-    <Description>An embeddable OpenAPI documentation and testing UI for ASP.NET Core — an alternative to Swagger UI and Scalar. Renders your app's OpenAPI spec through its own UI, with no separate infrastructure required.</Description>
+    <Description>An embeddable OpenAPI documentation and testing UI for ASP.NET Core. Renders your app's OpenAPI spec through its own UI, with no separate infrastructure required.</Description>
     <PackageTags>openapi;swagger;scalar;documentation;aspnetcore;api</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/bekov0004/Folio.AspNetCore</RepositoryUrl>
