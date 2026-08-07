@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Spectra.AspNetCore</PackageId>
+    <Version>1.0.0</Version>
+    <Description>Встраиваемый в ASP.NET Core интерфейс документации и тестирования OpenAPI — замена Swagger UI / Scalar. Рендерит спецификацию вашего приложения через собственный UI без дополнительной инфраструктуры.</Description>
+    <PackageTags>openapi;swagger;scalar;documentation;aspnetcore;api</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <!-- UI-статика встраивается напрямую из Spectra-Prototype/htdocs — единый
+       источник правды для standalone-прототипа и NuGet-пакета, без ручного
+       копирования файлов между репозиториями. Спек-файлы (*.json в корне
+       htdocs) — тестовые данные самого прототипа, в пакет не идут: реальный
+       спек всегда предоставляет хост-приложение через SpectraOptions.SpecUrl. -->
+  <ItemGroup>
+    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/index.html">
+      <Link>wwwroot/index.html</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/css/**/*.css">
+      <Link>wwwroot/css/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/js/**/*.js">
+      <Link>wwwroot/js/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </EmbeddedResource>
+    <!-- Самостоятельно захостенные шрифты (Google Fonts) — UI не делает
+         ни одного внешнего запроса, полностью работает офлайн. -->
+    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/fonts/**/*.woff2">
+      <Link>wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" Condition="Exists('../../README.md')" />
+  </ItemGroup>
+
+</Project>
