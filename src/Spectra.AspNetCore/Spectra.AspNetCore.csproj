@@ -1,12 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <IsPackable>true</IsPackable>
+    <!-- SpectraClientConfig is serialize-only (never deserialized), so the
+         init-only-properties warning from the JSON source generator is a
+         false positive on older TFMs. -->
+    <NoWarn>$(NoWarn);SYSLIB1037</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

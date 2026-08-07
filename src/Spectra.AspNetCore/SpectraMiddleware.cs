@@ -131,7 +131,9 @@ public sealed class SpectraMiddleware
 internal sealed record SpectraClientConfig(string SpecUrl, string? Title);
 
 [JsonSerializable(typeof(SpectraClientConfig))]
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    GenerationMode = JsonSourceGenerationMode.Serialization)]
 internal partial class SpectraJsonContext : JsonSerializerContext
 {
 }

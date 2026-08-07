@@ -117,7 +117,7 @@ repositories.
 
 ## Requirements
 
-- ASP.NET Core, .NET 8 or .NET 9.
+- ASP.NET Core, .NET 6, 7, 8, or 9.
 - No internet connection required at all: fonts, Tailwind CSS, marked.js,
   and flatpickr are all bundled locally and embedded into the package
   assembly along with the rest of the UI — zero external requests, both at
