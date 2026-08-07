@@ -1,15 +1,15 @@
-namespace Spectra.AspNetCore;
+namespace Folio.AspNetCore;
 
 /// <summary>
-/// Spectra UI settings, configured in <see cref="SpectraMiddlewareExtensions.UseSpectra"/>.
+/// Folio UI settings, configured in <see cref="FolioMiddlewareExtensions.UseFolio"/>.
 /// </summary>
-public sealed class SpectraOptions
+public sealed class FolioOptions
 {
     /// <summary>
     /// The path the UI will be served under (no leading or trailing slash).
-    /// Defaults to "spectra", i.e. the UI opens at "/spectra".
+    /// Defaults to "folio", i.e. the UI opens at "/folio".
     /// </summary>
-    public string RoutePrefix { get; set; } = "spectra";
+    public string RoutePrefix { get; set; } = "folio";
 
     /// <summary>
     /// URL of the OpenAPI (JSON) document the UI will fetch and render.

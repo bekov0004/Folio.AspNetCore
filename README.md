@@ -1,9 +1,12 @@
-# Spectra.AspNetCore
+# Folio.AspNetCore
 
 An embeddable OpenAPI documentation and testing UI for ASP.NET Core — an
-alternative to Swagger UI and Scalar. The same UI as
-[Spectra](https://github.com/), packaged as middleware: no separate
+alternative to Swagger UI and Scalar, packaged as middleware: no separate
 infrastructure, no static hosting — just a NuGet package.
+
+Built on top of the [Spectra](https://github.com/bekov0004/SpectraPrototype)
+UI (the package is distributed as `Folio.AspNetCore` because the `Spectra`
+name was already taken on NuGet.org by an unrelated project).
 
 ## Screenshots
 
@@ -44,7 +47,7 @@ infrastructure, no static hosting — just a NuGet package.
 ## Installation
 
 ```bash
-dotnet add package Spectra.AspNetCore
+dotnet add package Folio.AspNetCore
 ```
 
 ## Usage
@@ -64,7 +67,7 @@ var app = builder.Build();
 
 app.MapOpenApi(); // publishes /openapi/v1.json
 
-app.UseSpectra(options =>
+app.UseFolio(options =>
 {
     options.RoutePrefix = "docs";           // UI will be at /docs
     options.SpecUrl     = "/openapi/v1.json";
@@ -81,7 +84,7 @@ builder.Services.AddSwaggerGen();
 // ...
 app.UseSwagger(); // publishes /swagger/v1/swagger.json
 
-app.UseSpectra(options =>
+app.UseFolio(options =>
 {
     options.SpecUrl = "/swagger/v1/swagger.json";
 });
@@ -92,11 +95,11 @@ list, model schemas, a type-aware request builder, in-browser request
 execution with generated cURL, environment support, and authorization
 against the spec's security schemes (`apiKey`, HTTP Bearer/Basic).
 
-## Options (`SpectraOptions`)
+## Options (`FolioOptions`)
 
 | Property      | Default               | Description                                                          |
 |---------------|------------------------|------------------------------------------------------------------------|
-| `RoutePrefix` | `"spectra"`           | Path the UI is served under (no leading/trailing slashes).            |
+| `RoutePrefix` | `"folio"`             | Path the UI is served under (no leading/trailing slashes).            |
 | `SpecUrl`     | `"/openapi/v1.json"`  | URL of the OpenAPI document — required for a real project.            |
 | `Title`       | `null`                | Page/header title. Falls back to the spec's `info.title` if not set.  |
 

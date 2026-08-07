@@ -10,16 +10,16 @@ using Microsoft.Extensions.FileProviders.Embedded;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Spectra.AspNetCore;
+namespace Folio.AspNetCore;
 
 /// <summary>
-/// Serves the Spectra UI embedded in the assembly: index.html (with the
+/// Serves the Folio UI embedded in the assembly: index.html (with the
 /// config — spec URL and title — injected) and static assets (css/js) —
 /// through the standard <see cref="StaticFileMiddleware"/> configured on
 /// top of the assembly's embedded resources, for proper caching/conditional
 /// requests instead of hand-rolled file serving.
 /// </summary>
-public sealed class SpectraMiddleware
+public sealed class FolioMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly PathString _matchPath;
@@ -27,14 +27,14 @@ public sealed class SpectraMiddleware
     private readonly byte[] _indexHtmlBytes;
 
     /// <summary>
-    /// Created by the framework via <c>UseMiddleware&lt;SpectraMiddleware&gt;</c> —
-    /// don't call this directly, use <see cref="SpectraMiddlewareExtensions.UseSpectra"/>.
+    /// Created by the framework via <c>UseMiddleware&lt;FolioMiddleware&gt;</c> —
+    /// don't call this directly, use <see cref="FolioMiddlewareExtensions.UseFolio"/>.
     /// </summary>
-    public SpectraMiddleware(
+    public FolioMiddleware(
         RequestDelegate next,
         IWebHostEnvironment hostingEnvironment,
         ILoggerFactory loggerFactory,
-        SpectraOptions options)
+        FolioOptions options)
     {
         ArgumentNullException.ThrowIfNull(next);
         ArgumentNullException.ThrowIfNull(hostingEnvironment);
@@ -44,7 +44,7 @@ public sealed class SpectraMiddleware
         _next = next;
         _matchPath = "/" + options.RoutePrefix.Trim('/');
 
-        var fileProvider = new ManifestEmbeddedFileProvider(typeof(SpectraMiddleware).Assembly, "wwwroot");
+        var fileProvider = new ManifestEmbeddedFileProvider(typeof(FolioMiddleware).Assembly, "wwwroot");
 
         var staticFileOptions = new StaticFileOptions
         {
@@ -97,13 +97,13 @@ public sealed class SpectraMiddleware
         await response.Body.WriteAsync(_indexHtmlBytes, httpContext.RequestAborted);
     }
 
-    private static byte[] BuildIndexHtml(IFileProvider fileProvider, SpectraOptions options)
+    private static byte[] BuildIndexHtml(IFileProvider fileProvider, FolioOptions options)
     {
         var fileInfo = fileProvider.GetFileInfo("index.html");
         if (!fileInfo.Exists)
         {
             throw new InvalidOperationException(
-                "Embedded resource 'wwwroot/index.html' was not found in the Spectra.AspNetCore assembly. " +
+                "Embedded resource 'wwwroot/index.html' was not found in the Folio.AspNetCore assembly. " +
                 "The package appears to be built incorrectly.");
         }
 
@@ -114,8 +114,8 @@ public sealed class SpectraMiddleware
             html = reader.ReadToEnd();
         }
 
-        var config = new SpectraClientConfig(options.SpecUrl, options.Title);
-        var configJson = JsonSerializer.Serialize(config, SpectraJsonContext.Default.SpectraClientConfig);
+        var config = new FolioClientConfig(options.SpecUrl, options.Title);
+        var configJson = JsonSerializer.Serialize(config, FolioJsonContext.Default.FolioClientConfig);
         var configScript = $"<script>window.__SPECTRA_CONFIG__ = {configJson};</script>";
 
         const string marker = "<head>";
@@ -128,12 +128,12 @@ public sealed class SpectraMiddleware
     }
 }
 
-internal sealed record SpectraClientConfig(string SpecUrl, string? Title);
+internal sealed record FolioClientConfig(string SpecUrl, string? Title);
 
-[JsonSerializable(typeof(SpectraClientConfig))]
+[JsonSerializable(typeof(FolioClientConfig))]
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     GenerationMode = JsonSourceGenerationMode.Serialization)]
-internal partial class SpectraJsonContext : JsonSerializerContext
+internal partial class FolioJsonContext : JsonSerializerContext
 {
 }

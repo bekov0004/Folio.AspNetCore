@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Spectra.AspNetCore/Spectra.AspNetCore.csproj" />
+    <ProjectReference Include="../../src/Folio.AspNetCore/Folio.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

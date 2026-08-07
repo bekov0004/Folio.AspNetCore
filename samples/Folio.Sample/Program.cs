@@ -1,4 +1,4 @@
-using Spectra.AspNetCore;
+using Folio.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +8,10 @@ var app = builder.Build();
 
 app.MapOpenApi();
 
-app.UseSpectra(options =>
+app.UseFolio(options =>
 {
     options.SpecUrl = "/openapi/v1.json";
-    options.Title = "Spectra Sample API";
+    options.Title = "Folio Sample API";
 });
 
 app.MapGet("/api/hello", (string? name) => Results.Ok(new { message = $"Hello, {name ?? "world"}!" }))
@@ -25,7 +25,7 @@ app.MapGet("/api/items/{id:int}", (int id) => Results.Ok(new { id, name = $"Item
 app.MapPost("/api/items", (CreateItemRequest request) => Results.Created($"/api/items/1", new { id = 1, request.Name }))
     .WithName("CreateItem");
 
-app.MapGet("/", () => Results.Redirect("/spectra/"));
+app.MapGet("/", () => Results.Redirect("/folio/"));
 
 app.Run();
 
