@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <PackageId>Folio.AspNetCore</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Anushervon</Authors>
     <Description>An embeddable OpenAPI documentation and testing UI for ASP.NET Core. Renders your app's OpenAPI spec through its own UI, with no separate infrastructure required.</Description>
     <PackageTags>openapi;swagger;scalar;documentation;aspnetcore;api</PackageTags>

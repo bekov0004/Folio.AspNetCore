@@ -10,35 +10,35 @@ just a NuGet package.
 
 **Endpoint list, model catalog and a request in flight:**
 
-![Welcome screen](docs/screenshots/01-home.png)
+![Welcome screen](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png)
 
 **Query parameters, headers from the spec, and the generated response schema:**
 
-![GET endpoint](docs/screenshots/02-endpoint-get.png)
+![GET endpoint](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png)
 
 **Type-aware request body builder with nested objects and multiple response codes:**
 
-![POST endpoint with request body](docs/screenshots/03-endpoint-post-body.png)
+![POST endpoint with request body](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png)
 
 **Executing a request from the browser — status, timing, headers and generated cURL:**
 
-![Executed response](docs/screenshots/04-execute-response.png)
+![Executed response](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png)
 
 **Full model catalog, resolved and searchable:**
 
-![Model catalog](docs/screenshots/05-schema-models.png)
+![Model catalog](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png)
 
 **Authorization against the spec's security schemes:**
 
-![Authorize modal](docs/screenshots/06-authorize.png)
+![Authorize modal](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png)
 
 **Instant endpoint search:**
 
-![Search](docs/screenshots/07-search.png)
+![Search](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png)
 
 **Dark mode:**
 
-![Dark mode](docs/screenshots/08-dark-mode.png)
+![Dark mode](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png)
 
 ## Installation
 
