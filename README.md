@@ -110,9 +110,9 @@ into a `<script>` tag on the fly before the rest of the scripts load — the
 UI itself hardcodes nothing and works with whatever OpenAPI document you
 point it at.
 
-The package's static assets are built from a single source tree shared
-with the standalone version of the UI, with no manual duplication between
-repositories.
+The package's static assets live in this repo under [`assets/ui/`](assets/ui/)
+so everything embedded in the published package is visible right here —
+nothing is pulled in from an external source at build time.
 
 ## Requirements
 
@@ -121,3 +121,7 @@ repositories.
   and flatpickr are all bundled locally and embedded into the package
   assembly along with the rest of the UI — zero external requests, both at
   build time and in the user's browser.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
