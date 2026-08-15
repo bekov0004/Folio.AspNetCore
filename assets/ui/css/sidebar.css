@@ -1,0 +1,62 @@
+/* ════════════════════════════════════════
+   sidebar.css — endpoint list items,
+                 method badges (GET/POST/...)
+   ════════════════════════════════════════ */
+
+/* ── ENDPOINT ITEMS ── */
+.tag-group-label {
+  padding: 12px 14px 5px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.endpoint-item {
+  display: flex; flex-direction: column;
+  padding: 7px 12px; cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  margin: 1px 6px; border-radius: 7px;
+}
+.endpoint-item:hover, .endpoint-item.active {
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+}
+.endpoint-item__header { display: flex; align-items: center; gap: 8px; overflow: hidden; min-width: 0; }
+.endpoint-item .text-sm {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: calc(100% - 60px);
+  transition: color 0.15s;
+}
+/* Previously, hovering would wrap the text onto multiple lines
+   (white-space:normal), which changed the element's height and caused a
+   reflow of the whole list on every hover — noticeably laggy when
+   scrolling with the mouse wheel. The full path is now shown via title
+   (tooltip), without changing the layout. */
+.endpoint-item:hover .text-sm,
+.endpoint-item.active .text-sm {
+  color: var(--text-primary);
+}
+.endpoint-item span.font-mono {
+  word-break: break-all; font-size: 11.5px; overflow-wrap: anywhere;
+}
+
+/* ── METHOD BADGES ── */
+.method-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 48px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600; font-size: 10px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  border-radius: 4px; padding: 2px 5px;
+  user-select: none; flex-shrink: 0;
+}
+.method-get    { color: #10d9a0; background: rgba(16,217,160,0.1); }
+.method-post   { color: #4da8ff; background: rgba(77,168,255,0.1); }
+.method-put    { color: #ffb347; background: rgba(255,179,71,0.1); }
+.method-patch  { color: #b57fff; background: rgba(181,127,255,0.1); }
+.method-delete { color: #ff5e7a; background: rgba(255,94,122,0.1); }
+

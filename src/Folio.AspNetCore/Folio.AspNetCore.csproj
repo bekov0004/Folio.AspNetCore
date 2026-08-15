@@ -34,25 +34,23 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-  <!-- UI assets are embedded directly from Spectra-Prototype/htdocs — a
-       single source of truth for both the standalone prototype and the
-       NuGet package, no manual file copying between repos. The spec files
-       (*.json at the root of htdocs) are the prototype's own test data and
-       are not included in the package: the real spec is always supplied by
-       the host app via FolioOptions.SpecUrl. -->
+  <!-- UI assets live in this repo under assets/ui/ (mirrored from
+       Spectra-Prototype/htdocs — copy manually before each release) so
+       everything embedded in the published package is visible in the
+       public repo, not pulled from a private source. -->
   <ItemGroup>
-    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/index.html">
+    <EmbeddedResource Include="../../assets/ui/index.html">
       <Link>wwwroot/index.html</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/css/**/*.css">
+    <EmbeddedResource Include="../../assets/ui/css/**/*.css">
       <Link>wwwroot/css/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/js/**/*.js">
+    <EmbeddedResource Include="../../assets/ui/js/**/*.js">
       <Link>wwwroot/js/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </EmbeddedResource>
     <!-- Self-hosted fonts (Google Fonts) — the UI makes zero external
          requests and works fully offline. -->
-    <EmbeddedResource Include="../../../Spectra-Prototype/htdocs/fonts/**/*.woff2">
+    <EmbeddedResource Include="../../assets/ui/fonts/**/*.woff2">
       <Link>wwwroot/fonts/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </EmbeddedResource>
   </ItemGroup>

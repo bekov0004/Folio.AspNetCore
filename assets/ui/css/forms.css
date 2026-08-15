@@ -1,0 +1,420 @@
+/* ════════════════════════════════════════
+   forms.css — base form controls (tc-input),\n   custom select/number/date/password, flatpickr theme
+   ════════════════════════════════════════ */
+
+/* ── FORMS & INPUTS ── */
+.form-input {
+  width: 100%; background: var(--bg-elevated);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 9px 12px;
+  font-family: 'Lexend', sans-serif; font-size: 13px;
+  color: var(--text-primary); outline: none; transition: all 0.2s;
+}
+.form-input::placeholder { color: var(--text-muted); }
+.form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+/* ── TC-INPUT — unified style for all form controls ── */
+.tc-input {
+  display: block;
+  width: 100%;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tc-input::placeholder { color: var(--text-muted); }
+.tc-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+textarea.tc-input { resize: vertical; }
+
+/* ── Unfilled required field (validation before submit) ── */
+.tc-input-invalid, .tc-select-wrap.tc-input-invalid {
+  border-color: #ff5e7a !important;
+  box-shadow: 0 0 0 3px rgba(255,94,122,0.15) !important;
+}
+
+select.tc-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237880a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+  cursor: pointer;
+}
+.dark select.tc-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b97c0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+.dark input[type="date"].tc-input::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"].tc-input::-webkit-calendar-picker-indicator,
+.dark input[type="time"].tc-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.75);
+  cursor: pointer;
+}
+
+input[type="file"].tc-input {
+  padding: 0;
+  cursor: pointer;
+}
+input[type="file"].tc-input::file-selector-button {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-radius: 6px 0 0 6px;
+  color: var(--text-secondary);
+  font-family: 'Lexend', sans-serif;
+  font-size: 12px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+input[type="file"].tc-input::file-selector-button:hover {
+  background-color: var(--bg-elevated);
+}
+
+#content input[type="text"]:not(.tc-input),
+#content input[type="file"]:not(.tc-input),
+#content select:not(.tc-input),
+#content textarea:not(#requestBody):not(.tc-input) {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Lexend', sans-serif !important;
+  border-radius: 8px !important; font-size: 13px !important;
+}
+#content input[type="text"]:not(.tc-input):focus,
+#content select:not(.tc-input):focus,
+#content textarea:not(#requestBody):not(.tc-input):focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
+  outline: none !important;
+}
+#content label { font-size: 12px !important; font-weight: 600 !important; color: var(--text-secondary) !important; letter-spacing: 0.2px !important; }
+#content h2 { font-family: 'JetBrains Mono', monospace !important; font-size: 17px !important; font-weight: 600 !important; color: var(--text-primary) !important; word-break: break-all !important; overflow-wrap: anywhere !important; min-width: 0 !important; }
+#content h3 { font-size: 13px !important; font-weight: 600 !important; color: var(--text-secondary) !important; letter-spacing: 0.3px !important; text-transform: uppercase !important; padding-bottom: 6px !important; border-bottom: 1px solid var(--border) !important; margin-bottom: 12px !important; }
+#content input[type="file"]:not(.tc-input) { padding: 7px !important; cursor: pointer !important; }
+#content textarea:not(#requestBody):not(.tc-input) { resize: vertical; }
+#content .space-y-5 > * + * { margin-top: 18px; }
+#content .mb-4 { margin-bottom: 14px; }
+/* :not(.tc-select-btn) — otherwise this rule (due to #content in the
+   selector) outweighs .tc-select-btn below by specificity, making the
+   custom select shorter than regular text inputs of the same height */
+#content button[type="button"]:not(.tc-select-btn):not(.resp-code-tab) { font-family: 'Lexend', sans-serif; font-size: 12px; font-weight: 600; color: var(--accent); background: none; border: none; cursor: pointer; padding: 2px 4px; }
+#content button[type="button"]:not(.tc-select-btn):not(.resp-code-tab):hover { text-decoration: underline; }
+
+
+/* ════════════════════════════════════════
+   CUSTOM SELECT (tc-select)
+   ════════════════════════════════════════ */
+.tc-select-wrap {
+  position: relative; width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tc-select-wrap:focus-within,
+.tc-select-wrap.tc-open {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.tc-select-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px 8px 12px;
+  font-family: 'Lexend', sans-serif; font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer; outline: none; text-align: left;
+}
+.tc-select-label {
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tc-select-chevron {
+  flex-shrink: 0; width: 14px; height: 14px;
+  color: var(--text-muted); margin-left: 8px;
+  transition: transform 0.18s ease;
+}
+.tc-select-wrap.tc-open .tc-select-chevron { transform: rotate(180deg); }
+
+.tc-select-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  z-index: 9999; list-style: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden; max-height: 220px; overflow-y: auto;
+  opacity: 0; transform: translateY(-6px); pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.tc-select-wrap.tc-open .tc-select-menu {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.tc-select-menu::-webkit-scrollbar { width: 4px; }
+.tc-select-menu::-webkit-scrollbar-track { background: transparent; }
+.tc-select-menu::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+.tc-select-opt {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  font-family: 'Lexend', sans-serif; font-size: 13px;
+  color: var(--text-secondary); cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  border-bottom: 1px solid var(--border);
+}
+.tc-select-opt:last-child { border-bottom: none; }
+.tc-select-opt:hover { background: var(--bg-elevated); color: var(--text-primary); }
+.tc-select-opt.tc-selected { color: var(--accent); font-weight: 500; }
+
+.tc-opt-dot {
+  flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%;
+  background: transparent; transition: background 0.1s;
+}
+.tc-select-opt.tc-selected .tc-opt-dot { background: var(--accent); }
+
+/* ════════════════════════════════════════
+   CUSTOM NUMBER INPUT (tc-number)
+   ════════════════════════════════════════ */
+.tc-number-wrap {
+  display: flex; align-items: stretch; width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tc-number-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.tc-number-side {
+  display: flex; flex-direction: row; flex-shrink: 0;
+  border-left: 1px solid var(--border);
+}
+.tc-number-btn {
+  width: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  color: var(--text-muted);
+  font-size: 13px; line-height: 1;
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+  user-select: none; -webkit-user-select: none;
+}
+.tc-number-btn:hover { background: var(--accent-glow); color: var(--accent); }
+.tc-number-dec { border-right: 1px solid var(--border); }
+
+input[type="number"].tc-number-inp {
+  flex: 1; min-width: 0;
+  background: transparent !important;
+  border: none !important; border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 8px 12px !important;
+  text-align: left;
+  -moz-appearance: textfield; appearance: textfield;
+}
+input[type="number"].tc-number-inp::-webkit-outer-spin-button,
+input[type="number"].tc-number-inp::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+input[type="number"].tc-number-inp:focus {
+  border: none !important; box-shadow: none !important;
+}
+
+/* ════════════════════════════════════════
+   CUSTOM DATE/TIME INPUT (tc-date)
+   ════════════════════════════════════════ */
+.tc-date-wrap {
+  display: flex; align-items: stretch; width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tc-date-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+input.tc-date-inp {
+  flex: 1; min-width: 0;
+  background: transparent !important;
+  border: none !important; border-radius: 0 !important;
+  box-shadow: none !important;
+}
+input.tc-date-inp::-webkit-calendar-picker-indicator { display: none !important; }
+.tc-date-btn {
+  flex-shrink: 0; width: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.tc-date-btn:hover { background: var(--accent-glow); color: var(--accent); }
+
+/* ════════════════════════════════════════
+   CUSTOM PASSWORD INPUT (tc-password)
+   ════════════════════════════════════════ */
+.tc-password-wrap {
+  display: flex; align-items: stretch; width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tc-password-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+input.tc-password-inp {
+  flex: 1; min-width: 0;
+  background: transparent !important;
+  border: none !important; border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.tc-password-btn {
+  flex-shrink: 0; width: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none;
+  border-left: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.tc-password-btn:hover { background: var(--accent-glow); color: var(--accent); }
+
+/* ════════════════════════════════════════
+   FLATPICKR — theme matching the site design
+   ════════════════════════════════════════ */
+.flatpickr-calendar {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08) !important;
+  font-family: 'Lexend', sans-serif !important;
+  padding: 6px !important;
+  width: auto !important;
+}
+.flatpickr-calendar::before,
+.flatpickr-calendar::after { display: none !important; }
+
+/* Month + navigation */
+.flatpickr-months { padding: 4px 0 2px !important; }
+.flatpickr-month { height: 32px !important; background: transparent !important; color: var(--text-primary) !important; fill: var(--text-primary) !important; }
+.flatpickr-prev-month, .flatpickr-next-month {
+  height: 32px !important; padding: 6px !important;
+  color: var(--text-secondary) !important; fill: var(--text-secondary) !important;
+  border-radius: 7px !important; transition: background 0.15s !important;
+}
+.flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important; fill: var(--text-primary) !important;
+}
+.flatpickr-prev-month svg, .flatpickr-next-month svg {
+  width: 13px !important; height: 13px !important;
+}
+.flatpickr-current-month {
+  font-size: 13px !important; font-weight: 600 !important;
+  color: var(--text-primary) !important; font-family: 'Lexend', sans-serif !important;
+  padding-top: 5px !important;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: transparent !important; color: var(--text-primary) !important;
+  font-family: 'Lexend', sans-serif !important;
+  font-weight: 600 !important; font-size: 13px !important;
+  border: none !important; outline: none !important;
+  -webkit-appearance: none !important; appearance: none !important;
+}
+.flatpickr-current-month input.cur-year {
+  color: var(--text-primary) !important;
+  font-family: 'Lexend', sans-serif !important;
+  font-weight: 600 !important; font-size: 13px !important;
+}
+.numInput.cur-year { background: transparent !important; }
+
+/* Weekdays */
+.flatpickr-weekdays { background: transparent !important; margin: 2px 0 !important; }
+span.flatpickr-weekday {
+  font-family: 'Lexend', sans-serif !important; font-size: 11px !important;
+  font-weight: 600 !important; color: var(--text-muted) !important;
+  text-transform: uppercase !important; letter-spacing: 0.4px !important;
+  background: transparent !important;
+}
+
+/* Days */
+.dayContainer { min-width: 252px !important; max-width: 252px !important; width: 252px !important; }
+.flatpickr-days { width: 252px !important; }
+.flatpickr-day {
+  border-radius: 7px !important;
+  font-family: 'Lexend', sans-serif !important; font-size: 12.5px !important;
+  color: var(--text-secondary) !important;
+  height: 34px !important; line-height: 34px !important;
+  max-width: 34px !important;
+  border: none !important; background: transparent !important;
+  transition: background 0.1s, color 0.1s !important;
+}
+.flatpickr-day:hover:not(.flatpickr-disabled):not(.selected):not(.today) {
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important; border: none !important;
+}
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected:hover {
+  background: var(--accent) !important;
+  color: #fff !important; border: none !important;
+  box-shadow: none !important;
+}
+.flatpickr-day.today {
+  border: none !important;
+  color: var(--accent) !important;
+  font-weight: 700 !important;
+  position: relative;
+}
+.flatpickr-day.today::after {
+  content: '';
+  position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent);
+}
+.flatpickr-day.today.selected::after { background: #fff; }
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+  color: var(--text-muted) !important; opacity: 0.45 !important;
+}
+.flatpickr-day.flatpickr-disabled {
+  color: var(--text-muted) !important; opacity: 0.3 !important;
+}
+
+/* Time */
+.flatpickr-time {
+  border-top: 1px solid var(--border) !important;
+  background: transparent !important; height: 44px !important;
+  margin-top: 6px !important; border-radius: 0 0 8px 8px !important;
+}
+.flatpickr-time input {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  font-family: 'Lexend', sans-serif !important; font-size: 13px !important;
+  border: none !important;
+}
+.flatpickr-time input:focus { background: var(--bg-elevated) !important; }
+.flatpickr-time .flatpickr-time-separator { color: var(--text-muted) !important; }
+.flatpickr-time .numInputWrapper { width: 44px !important; }
+.numInputWrapper span.arrowUp:after { border-bottom-color: var(--text-muted) !important; }
+.numInputWrapper span.arrowDown:after { border-top-color: var(--text-muted) !important; }
+.numInputWrapper:hover { background: var(--bg-elevated) !important; }
+.numInputWrapper span { border-color: var(--border) !important; }
+

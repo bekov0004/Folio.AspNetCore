@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIMPLE WEB API Documentation</title>
+
+  <!-- Everything below is served locally (bundled into the package) — no
+       external requests, works fully offline. -->
+
+  <!-- Fonts (self-hosted, collected from Google Fonts for the used weights) -->
+  <link rel="stylesheet" href="css/fonts.local.css">
+
+  <!-- Tailwind (built locally with the tailwindcss CLI, only the classes actually used) -->
+  <link rel="stylesheet" href="css/tailwind.local.css">
+
+  <!-- Markdown parser (for descriptions from the spec) -->
+  <script src="js/vendor/marked.min.js"></script>
+
+  <!-- Date picker -->
+  <link rel="stylesheet" href="css/vendor/flatpickr.min.css">
+  <script src="js/vendor/flatpickr.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/env-panel.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/request-panel.css">
+  <link rel="stylesheet" href="css/welcome.css">
+  <link rel="stylesheet" href="css/schema.css">
+  <link rel="stylesheet" href="css/global-headers.css">
+  <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+
+<!-- ════ HEADER ════ -->
+<header>
+  <div class="header-brand tooltip-below" id="headerBrand" data-tooltip="Home page">
+    <div class="header-logo">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <span class="header-title" id="headerTitleText">SIMPLE WEB API</span>
+    <span class="header-badge">v1</span>
+  </div>
+
+  <div class="header-actions">
+    <button id="shortcutsBtn" class="icon-btn tooltip-below" data-tooltip="Keyboard shortcuts (?)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </button>
+    <button id="themeToggle" class="icon-btn tooltip-below tooltip-right" data-tooltip="Toggle theme">
+      <svg class="hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      <svg class="block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ════ ENV PANEL ════ -->
+<div class="env-panel">
+  <button id="homeBtn" class="env-btn" data-tooltip="Home page" aria-label="Home page">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+    </svg>
+  </button>
+
+  <div class="env-divider"></div>
+
+  <button id="mobileEnvBtn" class="env-btn" data-tooltip="Select environment" aria-label="Select environment">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+    </svg>
+  </button>
+
+  <button id="mobileMenuBtn" class="env-btn" data-tooltip="Endpoints" aria-label="Endpoints">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+
+  <div class="env-divider"></div>
+
+  <button id="globalHeadersBtn" class="env-btn" data-tooltip="Global headers" aria-label="Global headers">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+    </svg>
+  </button>
+
+  <!-- "More" — shown only on narrow screens where all 9 buttons don't fit -->
+  <div class="env-divider env-more-divider"></div>
+  <button id="envMoreBtn" type="button" class="env-btn env-more-btn" data-tooltip="More" aria-label="More"
+          aria-haspopup="true" aria-expanded="false">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+      <circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
+
+  <!-- On desktop — just a continuation of the panel (display:contents).
+       On narrow screens — collapses into a popover menu above the "More" button. -->
+  <div id="envPanelOverflow">
+    <div class="env-divider"></div>
+
+    <!-- schemaViewBtn's slot in the shared row: while no endpoint is open, the
+         schema button lives here; once an endpoint is open, its slot in the row
+         is taken by executeRequestBtn (see _swapSchemaForExecute in app.js), and
+         the schema button itself temporarily moves into envPanelOverflow. -->
+    <span id="schemaBarAnchor" style="display:none;"></span>
+    <button id="schemaViewBtn" class="env-btn" data-tooltip="Endpoint schema / Models" aria-label="Endpoint schema / Models" disabled>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+      </svg>
+    </button>
+
+    <button id="authorizeBtn" class="env-btn" data-tooltip="Authorization" aria-label="Authorization" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
+    </button>
+
+    <div id="endpointActions" style="display:none;align-items:center;gap:6px;">
+      <div class="env-divider"></div>
+
+      <button id="saveExampleBtn" class="env-btn" data-tooltip="Save example" aria-label="Save example">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+        </svg>
+      </button>
+
+      <button id="showExamplesBtn" class="env-btn" data-tooltip="My examples" aria-label="My examples">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </button>
+
+      <button id="shareBtn" class="env-btn" data-tooltip="Copy endpoint link" aria-label="Copy endpoint link">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+      </button>
+
+      <div class="env-divider"></div>
+
+      <span id="executeOverflowAnchor" style="display:none;"></span>
+      <button id="executeRequestBtn" class="env-btn" data-tooltip="Send request" aria-label="Send request"
+              style="background:rgba(16,217,160,0.12);border-color:rgba(16,217,160,0.3);color:#10d9a0;">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MOBILE SWIPE PANEL ════ -->
+<div id="envSelectorPanel">
+  <div class="env-selector-row">
+    <button id="mobileAddEnvBtn" class="env-selector-btn" data-tooltip="Add">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+      </svg>
+    </button>
+    <div class="env-carousel-wrapper">
+      <div id="envCarousel" class="flex"></div>
+    </div>
+    <button id="mobileEditEnvBtn" class="env-selector-btn" data-tooltip="Edit">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+      </svg>
+    </button>
+  </div>
+  <button id="envListToggle" class="env-list-toggle" data-tooltip="All environments">
+    <span class="env-list-toggle-line"></span>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+    <span class="env-list-toggle-line"></span>
+  </button>
+  <div id="envPanelList" class="env-panel-list"></div>
+  <button type="button" id="importSpecServersBtn" class="env-import-servers-btn" style="display:none;">
+    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M7 10l5 5 5-5M12 15V3"/>
+    </svg>
+    <span id="importSpecServersBtnLabel">Import servers from spec</span>
+  </button>
+</div>
+
+<!-- ════ LAYOUT ════ -->
+<div class="flex">
+
+  <!-- Sidebar -->
+  <div id="sidebarWrap">
+    <aside id="sidebar">
+      <div class="sidebar-search-wrap">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search endpoints...">
+      </div>
+      <nav id="sidebarNav" class="pb-6 pt-2"></nav>
+    </aside>
+    <div class="sidebar-resizer" id="sidebarResizer">
+      <svg width="16" height="22" viewBox="0 -4 20 28" fill="currentColor" aria-hidden="true">
+        <path d="M6.25 -2a1.25 1.25 0 1 0 2.5 0 1.25 1.25 0 0 0-2.5 0m5 0a1.25 1.25 0 1 0 2.5 0 1.25 1.25 0 0 0-2.5 0M6.25 4a1.25 1.25 0 1 0 2.5 0 1.25 1.25 0 0 0-2.5 0m5 0a1.25 1.25 0 1 0 2.5 0 1.25 1.25 0 0 0-2.5 0m1.25 7.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5M6.25 10a1.25 1.25 0 1 0 2.5 0 1.25 1.25 0 0 0-2.5 0m6.25 7.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5M6.25 16a1.25 1.25 0 1 0 2.5 0 1.25 1.25 0 0 0-2.5 0"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Mobile endpoints modal -->
+  <div id="mobileEndpointsModal" class="modal-overlay">
+    <div class="modal w-full h-screen p-5 flex flex-col">
+      <div class="flex justify-between items-center mb-4">
+        <h3 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text-primary);">Endpoints</h3>
+        <span id="closeMobileMenu" class="close-modal">&times;</span>
+      </div>
+      <input type="text" id="mobileSearchInput" class="search-input" placeholder="Search..." style="margin-bottom:12px;">
+      <nav id="mobileSidebarNav" class="flex-1 overflow-y-auto pt-2"></nav>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main class="flex-1 p-5 ml-0">
+    <div id="content">
+      <div class="bg-white rounded-lg shadow-md p-4 dark:bg-gray-800 dark:shadow-lg">
+        <div class="welcome-screen">
+          <div class="welcome-icon">
+            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:var(--accent)">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text-primary);text-transform:none!important;border:none!important;padding:0!important;">
+            Welcome
+          </h2>
+          <p style="color:var(--text-muted);font-size:13px;">Loading OpenAPI spec...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ════ MODALS ════ -->
+
+<!-- Examples -->
+<div id="examplesModal" class="modal-overlay">
+  <div class="modal flex flex-col md:flex-row gap-0 max-w-6xl w-full" style="overflow:hidden;">
+    <div style="width:100%;max-width:320px;padding:24px;border-right:1px solid var(--border);">
+      <div class="flex justify-between items-center" style="margin-bottom:16px;">
+        <h3 style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary);">My examples</h3>
+        <span class="close-modal" id="closeExamplesModal" style="color:var(--text-muted);">&times;</span>
+      </div>
+      <div id="examplesList" class="max-h-[60vh] overflow-y-auto pr-1 space-y-2"></div>
+    </div>
+    <div style="flex:1;padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <h4 style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.8px;">Request body</h4>
+      <div id="examplePreview" style="flex:1;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:12px;overflow-x:auto;height:calc(60vh - 80px);color:var(--text-primary);">
+        <p style="color:var(--text-muted);">Select an example on the left</p>
+      </div>
+      <div style="display:flex;justify-content:flex-end;">
+        <button id="applyExampleBtn" style="background:var(--accent);color:white;border:none;padding:9px 20px;border-radius:8px;font-family:'Lexend',sans-serif;font-weight:600;font-size:13px;cursor:pointer;opacity:0.5;" disabled>
+          Apply
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Environment settings -->
+<div id="envModal" class="modal-overlay">
+  <div class="modal" style="max-width:440px;padding:28px;">
+    <h3 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:20px;">Environment settings</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:5px;">Name</label>
+        <input type="text" id="envName" class="tc-input">
+      </div>
+      <div>
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:5px;">Base URL</label>
+        <input type="text" id="envBaseUrl" placeholder="https://api.example.com" class="tc-input" style="font-family:'JetBrains Mono',monospace;font-size:12px;">
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0;">
+        The auth token and extra headers are now set in
+        "Global headers" — they apply to all environments at once.
+      </p>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:8px;align-items:center;">
+      <button id="deleteEnvBtn">Delete</button>
+      <button id="cancelEnvBtn">Cancel</button>
+      <button id="saveEnvBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div id="confirmModal" class="modal-overlay">
+  <div class="modal" style="max-width:380px;padding:28px;">
+    <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
+      <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,94,122,0.12);border:1px solid rgba(255,94,122,0.25);">
+        <svg width="18" height="18" fill="none" stroke="#ff5e7a" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+      </div>
+      <div>
+        <div id="confirmTitle" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Confirmation</div>
+        <div id="confirmMessage" style="font-size:13px;color:var(--text-secondary);line-height:1.5;"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button id="confirmCancel" style="background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);font-family:'Lexend',sans-serif;font-size:13px;font-weight:500;border-radius:8px;padding:8px 18px;cursor:pointer;">Cancel</button>
+      <button id="confirmOk"     style="background:#ff5e7a;color:white;border:none;font-family:'Lexend',sans-serif;font-size:13px;font-weight:600;border-radius:8px;padding:8px 18px;cursor:pointer;">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Prompt dialog -->
+<div id="promptModal" class="modal-overlay">
+  <div class="modal" style="max-width:400px;padding:28px;">
+    <div style="margin-bottom:16px;">
+      <div id="promptTitle" style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:14px;"></div>
+      <input type="text" id="promptInput" class="tc-input" />
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button id="promptCancel" style="background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);font-family:'Lexend',sans-serif;font-size:13px;font-weight:500;border-radius:8px;padding:8px 18px;cursor:pointer;">Cancel</button>
+      <button id="promptOk"     style="background:var(--accent);color:white;border:none;font-family:'Lexend',sans-serif;font-size:13px;font-weight:600;border-radius:8px;padding:8px 18px;cursor:pointer;">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Models browser -->
+<div id="modelsModal" class="modal-overlay">
+  <div class="modal models-modal-inner">
+    <!-- Left: model list -->
+    <div class="models-left-panel">
+      <div class="models-panel-hd">
+        <div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary);margin:0 0 2px;">Models</h3>
+          <span id="modelsModalCount" style="font-size:11px;color:var(--text-muted);font-family:'Lexend',sans-serif;"></span>
+        </div>
+        <span class="close-modal" id="closeModelsModal">&times;</span>
+      </div>
+      <input type="text" id="modelsSearch" class="models-search" placeholder="Search models..." autocomplete="off" spellcheck="false">
+      <div id="modelsList" class="models-list"></div>
+    </div>
+    <!-- Right: model schema -->
+    <div class="models-right-panel">
+      <div id="modelsSchemaTitle" class="models-schema-title"></div>
+      <div id="modelsSchemaBody" class="models-schema-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Schema viewer -->
+<div id="schemaModal" class="modal-overlay">
+  <div class="modal" style="max-width:860px;width:94%;display:flex;flex-direction:column;max-height:82vh;">
+    <div style="padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div id="schemaModalTitle" style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;overflow:hidden;"></div>
+        <span class="close-modal" id="closeSchemaModal" style="flex-shrink:0;">&times;</span>
+      </div>
+    </div>
+    <div id="schemaModalBody" style="flex:1;overflow-y:auto;padding:14px 22px 20px;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;"></div>
+  </div>
+</div>
+
+<!-- Global / Endpoint Headers Config -->
+<div id="globalHeadersModal" class="modal-overlay">
+  <div class="gh-modal">
+
+    <!-- Header -->
+    <div class="gh-modal-hd">
+      <div class="gh-modal-hd-left">
+        <div class="gh-modal-hd-icon" id="ghModalIcon"></div>
+        <div style="min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <h3 class="gh-modal-title"></h3>
+            <span class="gh-modal-mode-badge" id="ghModalModeBadge"></span>
+          </div>
+          <p class="gh-modal-subtitle" id="ghModalSubtitle"></p>
+        </div>
+      </div>
+      <span class="close-modal" id="closeGhModal">&times;</span>
+    </div>
+
+    <!-- Tabs by source: Global / Endpoint headers / From spec.
+         The second and third are hidden if the modal wasn't opened from an open endpoint's panel. -->
+    <div class="gh-tabs" id="ghTabs"></div>
+
+    <!-- Body (fully rebuilt for the active tab in globalHeaders.js) -->
+    <div class="gh-modal-body" id="ghModalBody"></div>
+
+    <!-- Footer -->
+    <div class="gh-modal-ft">
+      <div class="gh-modal-ft-hint" id="ghModalHint"></div>
+      <div style="display:flex;gap:8px;" id="ghModalFooterActions">
+        <button id="ghCancelBtn" class="gh-btn-cancel">Cancel</button>
+        <button id="ghSaveBtn" class="gh-btn-save">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Authorize (OpenAPI security schemes) -->
+<div id="authorizeModal" class="modal-overlay">
+  <div class="modal" style="max-width:520px;width:100%;padding:24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h3 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text-primary);">Authorization</h3>
+      <span class="close-modal" id="closeAuthorizeModal">&times;</span>
+    </div>
+    <p style="color:var(--text-muted);font-size:12.5px;margin-bottom:16px;">
+      Security schemes from the API spec. Values set here are automatically applied to requests.
+    </p>
+    <div id="authSchemesList" style="display:flex;flex-direction:column;gap:14px;max-height:60vh;overflow-y:auto;"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px;">
+      <button id="authorizeCloseBtn" class="gh-btn-cancel">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Keyboard shortcuts -->
+<div id="shortcutsModal" class="modal-overlay">
+  <div class="modal" style="max-width:400px;padding:28px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h3 style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text-primary);">Keyboard shortcuts</h3>
+      <span class="close-modal" id="closeShortcutsModal">&times;</span>
+    </div>
+    <div class="shortcuts-list">
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Search endpoints</span>
+        <kbd>/</kbd>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Send request</span>
+        <div class="shortcut-keys"><kbd>Ctrl</kbd><span>+</span><kbd>Enter</kbd></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Close window</span>
+        <kbd>Esc</kbd>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">This cheat sheet</span>
+        <kbd>?</kbd>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" style="position:fixed;top:18px;right:18px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
+
+<!-- ════ SCRIPTS (order matters — dependencies first) ════ -->
+<script src="js/utils.js"></script>
+<script src="js/dialogs.js"></script>
+<script src="js/environments.js"></script>
+<script src="js/globalHeaders.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/examples.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/controls.js"></script>
+<script src="js/request.js"></script>
+<script src="js/schema.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

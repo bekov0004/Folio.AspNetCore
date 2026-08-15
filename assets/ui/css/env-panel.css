@@ -1,0 +1,357 @@
+/* ════════════════════════════════════════
+   env-panel.css — floating button panel,
+   environment selection (carousel + list), tooltips
+   ════════════════════════════════════════ */
+
+/* ── ENV PANEL ── */
+.env-panel {
+  position: fixed; bottom: 18px; left: 50%;
+  transform: translateX(-50%);
+  /* Used to have backdrop-filter: blur(20px) — one of the most
+     expensive CSS effects, recalculated on any scroll anywhere on
+     the page (even inside the sidebar) and causing noticeable
+     lag/frame drops. Removed; to keep the panel from looking
+     transparent without the blur, the background was made less transparent. */
+  background: rgba(13,17,32,0.96);
+  border: 1px solid rgba(91,127,255,0.25);
+  border-radius: 16px; padding: 8px 12px;
+  display: flex; align-items: center; gap: 7px;
+  z-index: 50;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(91,127,255,0.1) inset;
+}
+.dark .env-panel { background: rgba(5,8,16,0.97); }
+:root:not(.dark) .env-panel {
+  background: rgba(255,255,255,0.97);
+  border-color: rgba(79,110,247,0.25);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(79,110,247,0.08) inset;
+}
+
+.env-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(91,127,255,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(91,127,255,0.2);
+  cursor: pointer; transition: all 0.2s;
+}
+.env-btn:hover { background: rgba(91,127,255,0.25); border-color: rgba(91,127,255,0.5); }
+.env-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.env-btn--active { background: rgba(16,217,160,0.12); border-color: rgba(16,217,160,0.3); }
+.env-btn--active:hover { background: rgba(16,217,160,0.22); border-color: rgba(16,217,160,0.5); }
+.env-btn svg { width: 16px; height: 16px; }
+
+.env-divider { display: none; }
+
+/* ── CUSTOM ENV DROPDOWN ── */
+.env-dropdown { position: relative; }
+
+.env-dropdown-btn {
+  display: flex; align-items: center; gap: 7px;
+  background: transparent; border: none; cursor: pointer;
+  padding: 4px 6px; border-radius: 7px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 13px; font-weight: 600; color: var(--accent);
+  transition: background 0.15s; white-space: nowrap;
+}
+.env-dropdown-btn:hover { background: var(--accent-glow); }
+
+.env-dot { width: 7px; height: 7px; border-radius: 50%; background: #10d9a0; flex-shrink: 0; }
+
+#envDropdownChevron { transition: transform 0.2s; color: var(--text-muted); flex-shrink: 0; }
+.env-dropdown.open #envDropdownChevron { transform: rotate(180deg); }
+
+.env-dropdown-menu {
+  position: absolute; bottom: calc(100% + 10px); left: 0;
+  min-width: 200px;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  overflow: hidden; opacity: 0; pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.18s, transform 0.18s; z-index: 200;
+}
+.env-dropdown.open .env-dropdown-menu { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+.env-dropdown-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 12px; cursor: pointer;
+  font-family: 'Lexend', sans-serif; font-size: 13px;
+  color: var(--text-secondary); transition: background 0.12s;
+  border-bottom: 1px solid var(--border);
+}
+.env-dropdown-item:last-child { border-bottom: none; }
+.env-dropdown-item:hover { background: var(--accent-glow); color: var(--text-primary); }
+.env-dropdown-item.active { background: var(--accent-glow); color: var(--accent); font-weight: 600; }
+.env-dropdown-item .item-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text-muted); flex-shrink: 0; transition: background 0.15s;
+}
+.env-dropdown-item.active .item-dot { background: #10d9a0; }
+.env-dropdown-item .item-url {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text-muted); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+}
+.env-dropdown-item-inner { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+
+/* ── ENV SELECTOR PANEL (carousel + list, all sizes) ── */
+#envSelectorPanel {
+  position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%);
+  width: 88%; max-width: 320px;
+  background: rgba(13,17,32,0.97);
+  border: 1px solid rgba(91,127,255,0.2);
+  border-radius: 14px; padding: 8px; z-index: 60;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s, bottom 0.2s;
+}
+:root:not(.dark) #envSelectorPanel {
+  background: rgba(255,255,255,0.97);
+  border-color: rgba(79,110,247,0.2);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+.dark #envSelectorPanel { background: rgba(5,8,16,0.98); }
+#envSelectorPanel.active { opacity: 1; pointer-events: all; bottom: 86px; }
+
+/* Toggle button to expand the list */
+.env-list-toggle {
+  display: flex; align-items: center; gap: 6px;
+  width: 100%; background: none; border: none; cursor: pointer;
+  padding: 6px 2px 2px; color: rgba(91,127,255,0.4);
+  transition: color 0.2s;
+}
+.env-list-toggle:hover { color: rgba(91,127,255,0.75); }
+:root:not(.dark) .env-list-toggle       { color: rgba(79,110,247,0.35); }
+:root:not(.dark) .env-list-toggle:hover { color: rgba(79,110,247,0.7); }
+.env-list-toggle-line { flex: 1; height: 1px; background: currentColor; }
+.env-list-toggle svg  { flex-shrink: 0; transition: transform 0.22s; }
+.env-list-toggle.open svg { transform: rotate(180deg); }
+
+/* Environment list — expands via max-height */
+.env-panel-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  display: flex; flex-direction: column; gap: 2px;
+  scrollbar-width: thin; scrollbar-color: rgba(91,127,255,0.2) transparent;
+}
+.env-panel-list.open { max-height: 180px; overflow-y: auto; }
+
+/* ── Import servers[] from the spec ── */
+.env-import-servers-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; margin-top: 6px; padding: 8px;
+  border: 1px dashed rgba(91,127,255,0.35); border-radius: 9px;
+  background: none; color: var(--accent);
+  font-family: 'Lexend', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.env-import-servers-btn:hover { background: rgba(91,127,255,0.1); border-color: var(--accent); }
+
+.env-panel-item { padding: 6px 8px; border-radius: 8px; }
+
+.env-panel-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 10px;
+  cursor: pointer; transition: background 0.15s;
+}
+.env-panel-item:hover    { background: rgba(91,127,255,0.1); }
+.env-panel-item.active   { background: rgba(91,127,255,0.13); }
+:root:not(.dark) .env-panel-item:hover  { background: rgba(79,110,247,0.08); }
+:root:not(.dark) .env-panel-item.active { background: rgba(79,110,247,0.1); }
+
+.env-panel-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-muted); flex-shrink: 0; transition: background 0.15s;
+}
+.env-panel-item.active .env-panel-dot { background: #10d9a0; }
+
+.env-panel-item-body { display: flex; flex-direction: column; gap: 1px; overflow: hidden; min-width: 0; }
+.env-panel-item-name {
+  font-family: 'Lexend', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.env-panel-item.active .env-panel-item-name { color: var(--accent); }
+.env-panel-item-url {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.env-selector-row { display: flex; align-items: center; gap: 8px; }
+
+.env-carousel-wrapper {
+  flex: 1; overflow: hidden;
+  background: rgba(91,127,255,0.08); border: 1px solid rgba(91,127,255,0.15);
+  border-radius: 8px; height: 38px;
+  user-select: none; -webkit-user-select: none; touch-action: pan-y;
+}
+#envCarousel { display: flex; height: 100%; transition: transform 0.3s ease-out; }
+.env-item {
+  flex-shrink: 0; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lexend', sans-serif; font-size: 14px;
+  color: var(--text-muted); font-weight: 500; transition: all 0.3s ease;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 8px;
+}
+.env-item.active { font-weight: 700; color: var(--accent); }
+
+.env-selector-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(91,127,255,0.12); border: 1px solid rgba(91,127,255,0.2);
+  color: var(--accent); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s; cursor: pointer;
+}
+.env-selector-btn:hover { background: rgba(91,127,255,0.25); }
+.env-selector-btn svg   { width: 14px; height: 14px; }
+
+
+/* ── GLOBAL CUSTOM TOOLTIP (replacement for the native title="") ──
+   Applies to any element with [data-tooltip] site-wide —
+   a unified visual style instead of the browser's native tooltip. */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 11px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  z-index: 60;
+}
+[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border: 5px solid transparent;
+  border-top-color: var(--border-strong);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  z-index: 60;
+}
+/* :hover — only on devices where hover actually exists (a mouse).
+   On touch screens, a simple tap could otherwise briefly trigger
+   :hover and show the tooltip instead of an instant button press —
+   on touch, the tooltip is now shown only via .tc-tooltip-show
+   (long-press, see app.js: initEnvBtnTouchTooltips). */
+@media (hover: hover) and (pointer: fine) {
+  [data-tooltip]:hover::after {
+    opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+  }
+  [data-tooltip]:hover::before {
+    opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-1px);
+  }
+}
+[data-tooltip]:focus-visible::after,
+[data-tooltip].tc-tooltip-show::after {
+  opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+}
+[data-tooltip]:focus-visible::before,
+[data-tooltip].tc-tooltip-show::before {
+  opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-1px);
+}
+[data-tooltip]:disabled::after,
+[data-tooltip]:disabled::before { display: none; }
+
+@media (max-width: 480px) {
+  [data-tooltip]::after {
+    max-width: 130px;
+    white-space: normal;
+    text-align: center;
+    font-size: 11px;
+  }
+}
+
+/* Opens downward — for elements near the top edge (header) that
+   have nowhere to open upward without being clipped by the viewport. */
+.tooltip-below[data-tooltip]::after {
+  bottom: auto;
+  top: calc(100% + 11px);
+  transform: translateX(-50%) translateY(-4px);
+}
+.tooltip-below[data-tooltip]::before {
+  bottom: auto;
+  top: calc(100% + 6px);
+  border-top-color: transparent;
+  border-bottom-color: var(--border-strong);
+  transform: translateX(-50%) translateY(-4px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tooltip-below[data-tooltip]:hover::after,
+  .tooltip-below[data-tooltip]:hover::before {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+.tooltip-below[data-tooltip]:focus-visible::after,
+.tooltip-below[data-tooltip].tc-tooltip-show::after,
+.tooltip-below[data-tooltip]:focus-visible::before,
+.tooltip-below[data-tooltip].tc-tooltip-show::before {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Aligns to the right edge — for elements near the right edge of the
+   screen that have nowhere to center without being clipped by the viewport. */
+.tooltip-right[data-tooltip]::after { left: auto; right: 0; transform: translateY(-4px); }
+.tooltip-right[data-tooltip]::before { left: auto; right: 12px; transform: translateY(-4px); }
+@media (hover: hover) and (pointer: fine) {
+  .tooltip-right[data-tooltip]:hover::after,
+  .tooltip-right[data-tooltip]:hover::before { transform: translateY(0); }
+}
+.tooltip-right[data-tooltip]:focus-visible::after,
+.tooltip-right[data-tooltip].tc-tooltip-show::after,
+.tooltip-right[data-tooltip]:focus-visible::before,
+.tooltip-right[data-tooltip].tc-tooltip-show::before { transform: translateY(0); }
+
+/* ── Panel button overflow: "More" button — on narrow screens not all 9 buttons fit in one row ── */
+.env-more-btn { display: none; }
+.env-more-divider { display: none; }
+
+/* On desktop the overflow wrapper is no different from the regular
+   part of the panel — its children just take part in the row via display:contents. */
+#envPanelOverflow { display: contents; }
+
+@media (max-width: 600px) {
+  .env-more-btn { display: flex; }
+
+  /* Same look as the main panel (.env-panel) — just a separate
+     block above it, in one row, with no dividers between icons. */
+  #envPanelOverflow {
+    display: none;
+    position: fixed; bottom: 58px; left: 50%; transform: translateX(-50%);
+    flex-wrap: nowrap; justify-content: center;
+    background: rgba(13,17,32,0.96);
+    border: 1px solid rgba(91,127,255,0.25);
+    border-radius: 16px; padding: 8px 12px; gap: 7px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(91,127,255,0.1) inset;
+    z-index: 60;
+  }
+  .dark #envPanelOverflow { background: rgba(5,8,16,0.97); }
+  :root:not(.dark) #envPanelOverflow {
+    background: rgba(255,255,255,0.97);
+    border-color: rgba(79,110,247,0.25);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(79,110,247,0.08) inset;
+  }
+  #envPanelOverflow.env-overflow-open { display: flex; }
+  /* [style*="flex"] — only when JS has actually shown the block
+     (endpoint open); if it's hidden via style.display='none', it must
+     not be touched here, otherwise the Save/Examples/Share/Execute
+     buttons would be visible in the popover even without an open endpoint. */
+  #envPanelOverflow #endpointActions[style*="flex"] { display: contents !important; }
+}

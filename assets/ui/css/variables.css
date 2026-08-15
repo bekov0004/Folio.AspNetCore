@@ -1,0 +1,69 @@
+/* ════════════════════════════════════════
+   variables.css — themes, reset, base
+   ════════════════════════════════════════ */
+
+:root {
+  --bg-base: #f0f2f8;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f8f9fd;
+  --bg-sidebar: #f4f5fb;
+  --border: #e2e5f0;
+  --border-strong: #ccd0e6;
+  --text-primary: #0f1629;
+  --text-secondary: #3d4560;
+  --text-muted: #7880a0;
+  --accent: #4f6ef7;
+  --accent-glow: rgba(79,110,247,0.15);
+  --accent-hover: #3d5ae0;
+  --sidebar-w: 320px;
+  --header-h: 52px;
+
+  /* JSON syntax — light mode */
+  --json-key:  #2563eb;
+  --json-str:  #16a34a;
+  --json-num:  #dc2626;
+  --json-bool: #d97706;
+  --json-null: #9ca3af;
+
+  /* JSON editor textarea alignment */
+  --ta-font: 'JetBrains Mono', monospace;
+  --ta-size: 13px;
+  --ta-lh: 1.65;
+  --ta-pad-v: 9px;
+  --ta-pad-h: 12px;
+  --ta-border: 1px;
+}
+
+.dark {
+  --bg-base: #070b14;
+  --bg-surface: #0d1120;
+  --bg-elevated: #111827;
+  --bg-sidebar: #0a0e1a;
+  --border: #1a2340;
+  --border-strong: #253060;
+  --text-primary: #d8e0f8;
+  --text-secondary: #8b97c0;
+  --text-muted: #404870;
+  --accent: #5b7fff;
+  --accent-glow: rgba(91,127,255,0.15);
+  --accent-hover: #7090ff;
+
+  /* JSON syntax — dark mode */
+  --json-key:  #79b8ff;
+  --json-str:  #85e89d;
+  --json-num:  #f97583;
+  --json-bool: #ffab70;
+  --json-null: #6a737d;
+}
+
+/* ── Reset ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Lexend', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s;
+}
+
+::selection { background: var(--accent-glow); }

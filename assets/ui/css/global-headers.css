@@ -1,0 +1,282 @@
+/* ════════════════════════════════════════
+   global-headers.css — global/endpoint headers
+   modal, tabs, group sections for headers
+   in the endpoint panel
+   ════════════════════════════════════════ */
+
+/* ── Global Headers Modal shell ── */
+.gh-modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 94%; max-width: 900px;
+  max-height: 84vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+}
+
+/* ── Modal header ── */
+.gh-modal-hd {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 16px;
+}
+.gh-modal-hd-left {
+  display: flex; align-items: flex-start; gap: 14px; min-width: 0;
+}
+.gh-modal-hd-icon {
+  width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px;
+  border: 1px solid; display: flex; align-items: center; justify-content: center;
+}
+.gh-modal-title {
+  font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800;
+  color: var(--text-primary); margin: 0; line-height: 1.2;
+}
+.gh-modal-mode-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+  border: 1px solid; border-radius: 5px; padding: 2px 7px;
+  letter-spacing: 0.3px; flex-shrink: 0; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 220px;
+  display: inline-block;
+}
+.gh-modal-subtitle {
+  font-size: 12px; color: var(--text-muted); margin: 2px 0 0; line-height: 1.45;
+}
+
+/* ── Modal body ── */
+.gh-modal-body {
+  flex: 1; overflow-y: auto; padding: 20px 24px;
+  scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.gh-modal-body::-webkit-scrollbar { width: 4px; }
+.gh-modal-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+/* ── Empty state ── */
+.gh-empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 36px 20px; gap: 10px; text-align: center;
+}
+.gh-empty-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+}
+.gh-empty-title {
+  font-family: 'Lexend', sans-serif; font-size: 14px; font-weight: 600;
+  color: var(--text-secondary); margin: 0;
+}
+.gh-empty-sub {
+  font-size: 12px; color: var(--text-muted); margin: 0; max-width: 280px;
+  line-height: 1.5;
+}
+
+/* ── List of rows in the modal (Global/Endpoint headers tabs) ── */
+#ghRowsList {
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* ── Row card ── */
+.gh-row-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  transition: border-color 0.2s, box-shadow 0.15s;
+}
+.gh-row-card:focus-within {
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.gh-row-top {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px 10px 14px;
+}
+.gh-row-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.gh-name {
+  flex: 1.2 1 auto; min-width: 0;
+}
+/* .gh-type — the original <select> is hidden (display:none); the
+   actual visible element is the .tc-select-wrap wrapper of the custom dropdown */
+.gh-row-top .tc-select-wrap:has(.gh-type) {
+  flex: 0 0 130px; width: 130px;
+}
+.gh-default {
+  flex: 1 1 auto; min-width: 0;
+}
+.gh-del-btn {
+  flex-shrink: 0; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 7px; color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.gh-del-btn:hover {
+  background: rgba(255,94,122,0.1);
+  border-color: rgba(255,94,122,0.25);
+  color: #ff5e7a;
+}
+
+/* Narrow screens: name/type don't have enough room next to the
+   default value — move the value to its own line */
+@media (max-width: 640px) {
+  .gh-row-top { flex-wrap: wrap; row-gap: 8px; }
+  .gh-default { flex: 1 1 100%; order: 10; }
+}
+
+/* Extra field (enum options / array item type) — second row,
+   shown only when actually needed */
+.gh-row-fields {
+  padding: 0 14px 12px;
+  border-top: 1px solid var(--border);
+}
+.gh-row-fields .gh-field { max-width: 420px; }
+
+.gh-field { display: flex; flex-direction: column; gap: 5px; }
+.gh-field-lbl {
+  font-family: 'Lexend', sans-serif; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--text-muted); display: flex; align-items: center; gap: 5px;
+  padding-top: 10px;
+}
+.gh-field-hint {
+  font-size: 9.5px; font-weight: 500; letter-spacing: 0; text-transform: none;
+  color: var(--text-muted); opacity: 0.7;
+}
+.gh-field .tc-input { margin: 0 !important; }
+
+/* ── "Add header" button ── */
+.gh-add-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; padding: 10px;
+  border: 1px dashed var(--border-strong); border-radius: 10px;
+  color: var(--accent); background: none;
+  font-family: 'Lexend', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.gh-add-btn:hover { background: var(--accent-glow); border-color: var(--accent); }
+
+/* ── Modal footer ── */
+.gh-modal-ft {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.gh-modal-ft-hint {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Lexend', sans-serif; font-size: 11.5px;
+  color: var(--text-muted); min-width: 0;
+  flex: 1;
+}
+.gh-btn-cancel {
+  background: var(--bg-elevated); color: var(--text-secondary);
+  border: 1px solid var(--border);
+  font-family: 'Lexend', sans-serif; font-weight: 500; font-size: 13px;
+  border-radius: 8px; padding: 8px 18px; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.gh-btn-cancel:hover { border-color: var(--border-strong); }
+.gh-btn-save {
+  background: var(--accent); color: white; border: none;
+  font-family: 'Lexend', sans-serif; font-weight: 600; font-size: 13px;
+  border-radius: 8px; padding: 8px 20px; cursor: pointer;
+  transition: opacity 0.15s; white-space: nowrap;
+}
+.gh-btn-save:hover { opacity: 0.88; }
+
+/* ── Modal tabs by source ── */
+.gh-tabs {
+  display: flex; gap: 4px; padding: 0 24px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.gh-tab {
+  background: none; border: none; cursor: pointer;
+  padding: 10px 4px; margin-bottom: -1px;
+  font-family: 'Lexend', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--text-muted); border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.gh-tab + .gh-tab { margin-left: 14px; }
+.gh-tab:hover { color: var(--text-secondary); }
+.gh-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── Read-only list of API headers ("From spec" tab) ── */
+.gh-api-readonly-list { display: flex; flex-direction: column; gap: 6px; }
+.gh-api-row {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-left: 3px solid #4da8ff; border-radius: 10px;
+  padding: 10px 12px;
+}
+.gh-api-row-top { display: flex; align-items: center; gap: 8px; }
+.gh-api-row-name {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+  color: var(--text-primary);
+}
+.gh-api-row-type {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text-muted);
+}
+.gh-api-row-desc {
+  font-size: 12px; color: var(--text-muted); margin: 4px 0 0; line-height: 1.5;
+}
+
+/* ════════════════════════════════════════
+   HEADER GROUPS IN THE ENDPOINT PANEL
+   (Global / Endpoint headers / From API spec)
+   ════════════════════════════════════════ */
+.hdr-group + .hdr-group { margin-top: 14px; }
+.hdr-group-hd {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.hdr-group-title {
+  font-family: 'Lexend', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.4px; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hdr-group-count {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text-muted); background: var(--bg-elevated);
+  border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px;
+}
+.hdr-group-line { flex: 1; height: 1px; background: var(--border); }
+.hdr-group-add-btn {
+  width: 20px; height: 20px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.hdr-group-add-btn:hover {
+  background: var(--accent-glow); border-color: var(--accent); color: var(--accent);
+}
+.hdr-group-empty {
+  font-size: 12px; color: var(--text-muted); margin: 0; padding: 4px 2px;
+}
+
+/* Inline header-add form (in the Global/Endpoint group) —
+   visually like an editor row from the modal, but with ✓/✕ instead of a delete ✕ */
+.hdr-inline-add { margin-top: 4px; }
+.hdr-inline-editor-card .gh-row-top { flex-wrap: wrap; row-gap: 8px; }
+.hdr-inline-confirm-btn, .hdr-inline-cancel-btn {
+  flex-shrink: 0; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 7px; cursor: pointer; transition: all 0.15s;
+}
+.hdr-inline-confirm-btn {
+  background: rgba(16,217,160,0.1); border: 1px solid rgba(16,217,160,0.3); color: #10d9a0;
+}
+.hdr-inline-confirm-btn:hover { background: rgba(16,217,160,0.2); }
+.hdr-inline-cancel-btn {
+  background: transparent; border: 1px solid transparent; color: var(--text-muted);
+}
+.hdr-inline-cancel-btn:hover {
+  background: rgba(255,94,122,0.1); border-color: rgba(255,94,122,0.25); color: #ff5e7a;
+}
+

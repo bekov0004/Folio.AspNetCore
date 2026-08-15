@@ -1,0 +1,181 @@
+/* ════════════════════════════════════════
+   editor.css — JSON editor, syntax highlighting,
+                overlay textarea
+   ════════════════════════════════════════ */
+
+/* ── JSON ACTION BUTTONS (overlay in the top-right corner) ── */
+.json-action-btns {
+  position: absolute;
+  top: 8px; right: 8px;
+  display: flex; gap: 4px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.json-action-btn {
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.json-action-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
+.json-action-btn svg  { pointer-events: none; }
+
+/* Show on hover over the parent block */
+.json-hl-container:hover   .json-action-btns,
+#responseBlock:hover       .json-action-btns,
+.code-block-wrap:hover     .json-action-btns,
+#examplePreview:hover      .json-action-btns,
+#schemaModalBody:hover     .json-action-btns,
+#modelsSchemaBody:hover    .json-action-btns,
+.pjson-wrap:hover          .json-action-btns { opacity: 1; }
+
+/* ── Clickable values in the response block ── */
+#responseContent .json-str,
+#responseContent .json-num,
+#responseContent .json-bool {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: bottom;
+  max-width: 100%;
+  word-break: break-all;
+  border-radius: 3px;
+  transition: background 0.1s;
+  position: relative;
+}
+#responseContent .json-str:hover,
+#responseContent .json-num:hover,
+#responseContent .json-bool:hover {
+  background: rgba(91, 127, 255, 0.15);
+  outline: 1px solid rgba(91, 127, 255, 0.35);
+}
+#responseContent .json-str:hover::after,
+#responseContent .json-num:hover::after,
+#responseContent .json-bool:hover::after {
+  content: 'Click to copy';
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-family: 'Lexend', sans-serif;
+  font-size: 11px; font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+/* ── TOOLBAR ── */
+.json-editor-wrap { position: relative; }
+
+.json-toolbar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border); border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+
+.json-toolbar-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.3px;
+  color: var(--text-muted); background: none;
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: 3px 8px; cursor: pointer; transition: all 0.15s;
+}
+.json-toolbar-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
+
+/* ── STATUS ── */
+.json-status {
+  margin-left: auto; display: flex; align-items: center; gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+  transition: all 0.2s;
+}
+.json-status-dot { width: 6px; height: 6px; border-radius: 50%; transition: all 0.2s; }
+.json-status.valid .json-status-dot  { background: #10d9a0; }
+.json-status.valid .json-status-text { color: #10d9a0; }
+.json-status.invalid .json-status-dot  { background: #ff5e7a; }
+.json-status.invalid .json-status-text { color: #ff5e7a; }
+
+/* ── ERROR STATE ── */
+.json-editor-wrap textarea { border-radius: 0 0 8px 8px !important; }
+.json-editor-wrap.has-error textarea { border-color: #ff5e7a !important; box-shadow: 0 0 0 3px rgba(255,94,122,0.12) !important; }
+.json-error-msg { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff5e7a; padding: 5px 10px; display: none; }
+.json-editor-wrap.has-error .json-error-msg { display: block; }
+
+/* ── SYNTAX TOKEN COLORS (theme-aware via variables.css) ── */
+.json-key  { color: var(--json-key);  }
+.json-str  { color: var(--json-str);  }
+.json-num  { color: var(--json-num);  }
+.json-bool { color: var(--json-bool); }
+.json-null { color: var(--json-null); }
+
+/* ── HIGHLIGHT OVERLAY ── */
+.json-hl-container {
+  position: relative;
+  background: var(--bg-elevated);
+  border-radius: 0 0 8px 8px;
+}
+
+.json-hl-backdrop {
+  position: absolute;
+  top: var(--ta-border); left: var(--ta-border);
+  right: var(--ta-border); bottom: var(--ta-border);
+  margin: 0;
+  padding: var(--ta-pad-v) var(--ta-pad-h);
+  font-family: var(--ta-font);
+  font-size: var(--ta-size);
+  line-height: var(--ta-lh);
+  letter-spacing: 0; tab-size: 2;
+  border: none; border-radius: 0 0 7px 7px;
+  pointer-events: none;
+  white-space: pre-wrap; word-wrap: break-word; word-break: break-all;
+  overflow: hidden;
+  background: transparent;
+  /* plain chars (brackets, commas) use text color; spans override for tokens */
+  color: var(--text-secondary);
+  z-index: 0; box-sizing: border-box;
+}
+
+/* span colors override the base text color */
+.json-hl-backdrop .json-key  { color: var(--json-key);  }
+.json-hl-backdrop .json-str  { color: var(--json-str);  }
+.json-hl-backdrop .json-num  { color: var(--json-num);  }
+.json-hl-backdrop .json-bool { color: var(--json-bool); }
+.json-hl-backdrop .json-null { color: var(--json-null); }
+
+/* ── TEXTAREA (pixel-perfect match with backdrop) ── */
+textarea#requestBody {
+  position: relative; z-index: 1;
+  font-family: var(--ta-font) !important;
+  font-size: var(--ta-size) !important;
+  line-height: var(--ta-lh) !important;
+  letter-spacing: 0 !important; tab-size: 2 !important;
+  padding: var(--ta-pad-v) var(--ta-pad-h) !important;
+  background: transparent !important;
+  color: transparent !important;
+  caret-color: var(--text-primary) !important;
+  resize: none !important; overflow: hidden !important;
+  min-height: 160px; box-sizing: border-box;
+  white-space: pre-wrap; word-wrap: break-word; word-break: break-all;
+  border: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  width: 100%; display: block; outline: none;
+}
+textarea#requestBody:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
+}
+textarea#requestBody::selection {
+  background: rgba(91,127,255,0.35) !important;
+  color: transparent !important;
+}
