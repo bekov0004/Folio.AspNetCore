@@ -6,39 +6,46 @@ just a NuGet package.
 
 ## Screenshots
 
-*Rendered from a sample e-commerce API spec — see [`docs/demo-openapi.json`](docs/demo-openapi.json).*
+*Rendered from a sample e-commerce API spec — see [`docs/demo-openapi.json`](docs/demo-openapi.json). Click a thumbnail for the full-size screenshot.*
 
-**Endpoint list, model catalog and a request in flight:**
-
-![Welcome screen](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png)
-
-**Query parameters, headers from the spec, and the generated response schema:**
-
-![GET endpoint](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png)
-
-**Type-aware request body builder with nested objects and multiple response codes:**
-
-![POST endpoint with request body](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png)
-
-**Executing a request from the browser — status, timing, headers and generated cURL:**
-
-![Executed response](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png)
-
-**Full model catalog, resolved and searchable:**
-
-![Model catalog](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png)
-
-**Authorization against the spec's security schemes:**
-
-![Authorize modal](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png)
-
-**Instant endpoint search:**
-
-![Search](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png)
-
-**Dark mode:**
-
-![Dark mode](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png)
+<table>
+<tr>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png" alt="Welcome screen" /></a>
+<br />Endpoint list &amp; model catalog
+</td>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png" alt="GET endpoint" /></a>
+<br />GET endpoint &amp; response schema
+</td>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png" alt="POST endpoint with request body" /></a>
+<br />Type-aware request body builder
+</td>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png" alt="Executed response" /></a>
+<br />Request execution &amp; generated cURL
+</td>
+</tr>
+<tr>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png" alt="Model catalog" /></a>
+<br />Full, searchable model catalog
+</td>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png" alt="Authorize modal" /></a>
+<br />Authorization against security schemes
+</td>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png" alt="Search" /></a>
+<br />Instant endpoint search
+</td>
+<td width="25%" align="center">
+<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png" alt="Dark mode" /></a>
+<br />Dark mode
+</td>
+</tr>
+</table>
 
 ## Installation
 
