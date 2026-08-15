@@ -46,6 +46,8 @@ just a NuGet package.
 dotnet add package Folio.AspNetCore
 ```
 
+See [CHANGELOG.md](CHANGELOG.md) for release history.
+
 ## Usage
 
 The package doesn't care how you generate your OpenAPI document — it just
@@ -121,7 +123,3 @@ nothing is pulled in from an external source at build time.
   and flatpickr are all bundled locally and embedded into the package
   assembly along with the rest of the UI — zero external requests, both at
   build time and in the user's browser.
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for release history.
