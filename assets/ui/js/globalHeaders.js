@@ -531,35 +531,57 @@ function _hdrApiGroupHtml(apiParams) {
     </div>`;
 }
 
+/* Returns '' when there's nothing to configure — an empty "Headers /
+   No headers" section with no way to act on it (the add-header button
+   only exists once at least one group is rendered) is just dead
+   weight in every endpoint panel. */
 function buildEndpointHeadersHtml(ep) {
   const globalCfg = getGlobalHeadersConfig();
   const epCfg     = currentEndpointKey ? getEndpointHeadersConfig(currentEndpointKey) : [];
   const apiParams = (ep.parameters || []).filter(p => p.in === 'header');
   const total     = globalCfg.length + epCfg.length + apiParams.length;
 
+  if (!total) return '';
+
   return `
     <div id="epHeadersSection" class="ep-section" style="border-top:1px solid var(--border);">
       <div class="ep-section-hd">
         <span class="ep-section-title">Headers</span>
         <span class="ep-section-line"></span>
-        ${total > 0 ? `<span class="ep-section-badge">${total}</span>` : ''}
+        <span class="ep-section-badge">${total}</span>
       </div>
       <div id="epHeadersContent">
-        ${total > 0
-          ? `${_hdrGroupHtml('global', 'Global', globalCfg)}${_hdrGroupHtml('endpoint', 'Endpoint headers', epCfg)}${_hdrApiGroupHtml(apiParams)}`
-          : '<p class="hdr-group-empty">No headers</p>'}
+        ${_hdrGroupHtml('global', 'Global', globalCfg)}${_hdrGroupHtml('endpoint', 'Endpoint headers', epCfg)}${_hdrApiGroupHtml(apiParams)}
       </div>
     </div>`;
 }
 
-/* Rebuild the section after the config changes */
+/* Rebuild the section after the config changes — handles all three
+   transitions: had headers → still has headers (swap in place), had
+   headers → now empty (remove), had none → now has some (insert
+   fresh, anchored right before the always-present Response section). */
 function rerenderEndpointHeadersSection() {
-  const old = document.getElementById('epHeadersSection');
-  if (!old || !currentEndpointData) return;
+  if (!currentEndpointData) return;
 
-  const div = document.createElement('div');
-  div.innerHTML = buildEndpointHeadersHtml(currentEndpointData);
-  old.replaceWith(div.firstElementChild);
+  const old  = document.getElementById('epHeadersSection');
+  const html = buildEndpointHeadersHtml(currentEndpointData);
+
+  if (!html) {
+    old?.remove();
+    return;
+  }
+
+  const div   = document.createElement('div');
+  div.innerHTML = html;
+  const fresh = div.firstElementChild;
+
+  if (old) {
+    old.replaceWith(fresh);
+  } else {
+    const responseSection = document.getElementById('responseBlock')?.closest('.ep-section');
+    if (responseSection) responseSection.before(fresh);
+    else document.getElementById('tryApiForm')?.appendChild(fresh);
+  }
 
   restoreEndpointState();
   initTcControls(document.getElementById('epHeadersSection'));

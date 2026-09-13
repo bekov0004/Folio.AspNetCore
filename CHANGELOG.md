@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Response block had a large unexplained gap between the status line and the body — the container had `white-space: pre` intended for its `<pre>` content, but applied at the wrong level it also preserved the whitespace/newlines between the status row and the body in the template markup as visible blank space
 - Response headers rendered as bare key/value pairs with no separator between them (e.g. `content-type` directly followed by `application/json...` with no colon), making long values hard to tell apart from the header name
+- The endpoint panel's "Headers" section always rendered, even with zero headers configured — showing a bare "No headers" label with no way to act on it. It's now hidden entirely until there's something to show
 
 ---
 
