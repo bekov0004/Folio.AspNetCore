@@ -1115,6 +1115,17 @@ function _buildGoNetHttp(method, url, headers, { json, multipart, form } = {}) {
 }
 
 /**
+ * Maps an HTTP status code to a color family for the response block —
+ * 2xx green, 3xx blue, 4xx amber, 5xx (and anything else) red.
+ */
+function _statusFamily(status) {
+  if (status >= 200 && status < 300) return 'green';
+  if (status >= 300 && status < 400) return 'blue';
+  if (status >= 400 && status < 500) return 'amber';
+  return 'red';
+}
+
+/**
  * Builds the list of response headers
  */
 function _responseHeadersHtml(entries) {
@@ -1344,17 +1355,17 @@ async function sendRequest() {
     if (ct?.includes('application/json')) { const j = await res.json(); body = safeJsonStringify(j); }
     else body = await res.text();
 
-    const st = `${res.status} ${res.statusText}`;
-    const ok = res.ok;
+    const st     = `${res.status} ${res.statusText}`;
+    const family = _statusFamily(res.status);
     const resHeaders = [...res.headers.entries()];
 
     rc.innerHTML = `
       <div class="response-status-row">
-        <span class="response-status ${ok ? 'bg-green-500' : 'bg-red-500'} text-white">${st}</span>
+        <span class="response-status bg-${family}-500 text-white">${st}</span>
         <span class="response-duration">${durMs} ms</span>
       </div>
       <pre>${ct?.includes('application/json') ? highlightJson(body) : escapeHtml(body)}</pre>`;
-    rc.className = `response-block p-4 rounded-lg ${ok ? 'bg-green-900/30 border border-green-800 text-green-200' : 'bg-red-900/30 border border-red-800 text-red-200'}`;
+    rc.className = `response-block p-4 rounded-lg bg-${family}-900/30 border border-${family}-800 text-${family}-200`;
     rb.classList.remove('hidden');
     _renderResponseHeaders(resHeaders);
     bindResponseActions(body);

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Response headers moved out of the colored response body box into their own neutral, collapsed-by-default section, so they no longer compete with the response body for attention
 - Removed the redundant response-code badge next to the "Response" section title (the spec's documented code) — it sat right above the actual executed status once you hit Execute, showing what looked like two different "200"s at once
+- Response block is now colored by status code family instead of a binary success/error split — 2xx green, 3xx blue, 4xx amber, 5xx (and network errors) red
 
 ### Fixed
 - Response block had a large unexplained gap between the status line and the body — the container had `white-space: pre` intended for its `<pre>` content, but applied at the wrong level it also preserved the whitespace/newlines between the status row and the body in the template markup as visible blank space

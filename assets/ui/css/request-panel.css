@@ -116,6 +116,18 @@ pre {
 .text-red-200 { color: #ff8fa0 !important; }
 .bg-green-500 { background: #10d9a0 !important; }
 .bg-red-500 { background: #ff5e7a !important; }
+
+/* ── Response status color families — 3xx (redirect) and 4xx (client
+   error), rounding out the existing green (2xx) / red (5xx and
+   network errors) pair used by the response block. ── */
+.bg-blue-900\/30 { background: rgba(56,189,248,0.08) !important; }
+.border-blue-800 { border-color: rgba(56,189,248,0.3) !important; }
+.text-blue-200 { color: #7dd3fc !important; }
+.bg-blue-500 { background: #0ea5e9 !important; }
+.bg-amber-900\/30 { background: rgba(245,158,11,0.1) !important; }
+.border-amber-800 { border-color: rgba(245,158,11,0.35) !important; }
+.text-amber-200 { color: #fcd34d !important; }
+.bg-amber-500 { background: #f59e0b !important; }
 .bg-red-100 { background: rgba(255,94,122,0.08) !important; }
 .border-red-500 { border-color: #ff5e7a !important; }
 .text-red-700 { color: #ff5e7a !important; }
