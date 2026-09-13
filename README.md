@@ -8,44 +8,13 @@ just a NuGet package.
 
 *Rendered from a sample e-commerce API spec — see [`docs/demo-openapi.json`](docs/demo-openapi.json). Click a thumbnail for the full-size screenshot.*
 
-<table>
-<tr>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png" alt="Welcome screen" /></a>
-<br />Endpoint list &amp; model catalog
-</td>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png" alt="GET endpoint" /></a>
-<br />GET endpoint &amp; response schema
-</td>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png" alt="POST endpoint with request body" /></a>
-<br />Type-aware request body builder
-</td>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png" alt="Executed response" /></a>
-<br />Request execution &amp; generated cURL
-</td>
-</tr>
-<tr>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png" alt="Model catalog" /></a>
-<br />Full, searchable model catalog
-</td>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png" alt="Authorize modal" /></a>
-<br />Authorization against security schemes
-</td>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png" alt="Search" /></a>
-<br />Instant endpoint search
-</td>
-<td width="25%" align="center">
-<a href="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png"><img src="https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png" alt="Dark mode" /></a>
-<br />Dark mode
-</td>
-</tr>
-</table>
+| ![Welcome screen](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/01-home.png) | ![GET endpoint](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/02-endpoint-get.png) | ![POST endpoint with request body](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/03-endpoint-post-body.png) | ![Executed response](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/04-execute-response.png) |
+|:---:|:---:|:---:|:---:|
+| Endpoint list & model catalog | GET endpoint & response schema | Type-aware request body builder | Request execution & generated cURL |
+
+| ![Model catalog](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/05-schema-models.png) | ![Authorize modal](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/06-authorize.png) | ![Search](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/07-search.png) | ![Dark mode](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/screenshots/08-dark-mode.png) |
+|:---:|:---:|:---:|:---:|
+| Full, searchable model catalog | Authorization against security schemes | Instant endpoint search | Dark mode |
 
 ## Installation
 
