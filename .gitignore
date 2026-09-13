@@ -3,3 +3,5 @@ obj/
 *.nupkg
 *.snupkg
 .vs/
+CLAUDE.md
+.claude/
