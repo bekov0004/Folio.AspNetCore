@@ -22,7 +22,9 @@ just a NuGet package.
 dotnet add package Folio.AspNetCore
 ```
 
-See [CHANGELOG.md](CHANGELOG.md) for release history.
+See [CHANGELOG.md](CHANGELOG.md) for release history, and the
+[Wiki](https://github.com/bekov0004/Folio.AspNetCore/wiki) for full docs
+(getting started, authorization, FAQ).
 
 ## Usage
 
