@@ -264,12 +264,16 @@ main { padding: 20px !important; padding-bottom: 160px !important; min-width: 0;
   #confirmModal, #promptModal { align-items: flex-end !important; }
 
   .env-dropdown-menu {
-    left: 50%;
-    transform: translateX(-50%) translateY(6px);
-    min-width: calc(100vw - 32px);
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 76px;
+    width: auto;
+    min-width: 0;
+    transform: translateY(6px);
   }
   .env-dropdown.open .env-dropdown-menu {
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
 
   .welcome-screen { padding: 20px 12px; }

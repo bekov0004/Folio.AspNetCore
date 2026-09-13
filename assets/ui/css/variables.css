@@ -64,6 +64,7 @@ body {
   background: var(--bg-base);
   color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
 }
 
 ::selection { background: var(--accent-glow); }
