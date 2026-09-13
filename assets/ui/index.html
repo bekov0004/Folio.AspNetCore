@@ -96,10 +96,15 @@
 
   <div class="env-divider"></div>
 
-  <button id="globalHeadersBtn" class="env-btn" data-tooltip="Global headers" aria-label="Global headers">
+  <!-- schemaViewBtn's slot in the shared row: while no endpoint is open, the
+       schema button lives here; once an endpoint is open, its slot in the row
+       is taken by executeRequestBtn (see _swapSchemaForExecute in app.js), and
+       the schema button itself temporarily moves into envPanelOverflow. -->
+  <span id="schemaBarAnchor" style="display:none;"></span>
+  <button id="schemaViewBtn" class="env-btn" data-tooltip="Endpoint schema / Models" aria-label="Endpoint schema / Models" disabled>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
     </svg>
   </button>
 
@@ -119,15 +124,10 @@
   <div id="envPanelOverflow">
     <div class="env-divider"></div>
 
-    <!-- schemaViewBtn's slot in the shared row: while no endpoint is open, the
-         schema button lives here; once an endpoint is open, its slot in the row
-         is taken by executeRequestBtn (see _swapSchemaForExecute in app.js), and
-         the schema button itself temporarily moves into envPanelOverflow. -->
-    <span id="schemaBarAnchor" style="display:none;"></span>
-    <button id="schemaViewBtn" class="env-btn" data-tooltip="Endpoint schema / Models" aria-label="Endpoint schema / Models" disabled>
+    <button id="globalHeadersBtn" class="env-btn" data-tooltip="Global headers" aria-label="Global headers">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
       </svg>
     </button>
 
