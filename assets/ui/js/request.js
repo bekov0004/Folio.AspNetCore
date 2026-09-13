@@ -5,7 +5,20 @@
 
 let _bodyViewMode      = 'json';
 let _currentBodySchema = null;
-let _lastCurlCommand   = '';
+let _lastRequestSnapshot = null; // { method, url, headers, json, multipart, form } for the last executed request
+let _codegenLang       = 'curl'; // active tab in the code-generation block
+
+/* Registry of code generators, keyed by tab id — each takes the same
+   (method, url, headers, { json, multipart, form }) signature as
+   _buildCurlCommand so they can share a single request snapshot. */
+const CODEGEN_LANGS = {
+  curl:       { label: 'cURL',       build: _buildCurlCommand },
+  javascript: { label: 'JavaScript', build: _buildJsFetch },
+  python:     { label: 'Python',     build: _buildPythonRequests },
+  csharp:     { label: 'C#',         build: _buildCSharpHttpClient },
+  go:         { label: 'Go',         build: _buildGoNetHttp },
+  powershell: { label: 'PowerShell', build: _buildPowerShell },
+};
 
 const BODY_INPUT_CLS = 'tc-input';
 
@@ -692,16 +705,25 @@ function showEndpoint(path, method) {
       ${jsonActionBtnsHtml('copyResponseBtn', 'downloadResponseBtn')}
       <div id="responseContent" class="response-block"></div>
     </div>
-    <div id="curlBlock" class="hidden" style="margin-bottom:14px;">
-      <div class="curl-label">
-        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17l6-6-6-6M12 19h8"/>
-        </svg>
-        cURL
+    <div id="codegenBlock" class="hidden" style="margin-bottom:14px;">
+      <div class="codegen-hd">
+        <div class="curl-label">
+          <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17l6-6-6-6M12 19h8"/>
+          </svg>
+          Code
+        </div>
+        <div class="codegen-lang-picker">
+          <select id="codegenLangSelect" class="tc-input">
+            ${Object.entries(CODEGEN_LANGS).map(([id, lang]) =>
+              `<option value="${id}"${id === _codegenLang ? ' selected' : ''}>${escapeHtml(lang.label)}</option>`
+            ).join('')}
+          </select>
+        </div>
       </div>
-      <div id="curlContent" style="position:relative;margin-top:8px;">
-        ${jsonActionBtnsHtml('copyCurlBtn')}
-        <pre class="code-block" id="curlPre"></pre>
+      <div id="codegenContent" style="position:relative;margin-top:8px;">
+        ${jsonActionBtnsHtml('copyCodegenBtn')}
+        <pre class="code-block" id="codegenPre"></pre>
       </div>
     </div>
     ${codeTabsHtml}
@@ -728,9 +750,9 @@ function showEndpoint(path, method) {
   updateObjCounters(content);
 
   document.getElementById('requestBody')
-    ?.addEventListener('input', saveEndpointState);
+    ?.addEventListener('input', () => { saveEndpointState(); _updateCodegenPreview(); });
   document.querySelectorAll('#content .tc-prop-row--path .tc-prop-input input, #content .tc-prop-row--path .tc-prop-input select, #content .tc-prop-row--query .tc-prop-input input, #content .tc-prop-row--query .tc-prop-input select')
-    .forEach(el => el.addEventListener('input', saveEndpointState));
+    .forEach(el => el.addEventListener('input', () => { saveEndpointState(); _updateCodegenPreview(); }));
 
   // Wire custom header inputs (G, E) + API header params to saveEndpointState
   _wireHdrSectionInputs();
@@ -738,8 +760,13 @@ function showEndpoint(path, method) {
   const apiHdrParams = (ep.parameters || []).filter(p => p.in === 'header');
   for (const par of apiHdrParams) {
     const el = document.getElementById(paramId(par.name, 'header'));
-    if (el) el.addEventListener('input', saveEndpointState);
+    if (el) el.addEventListener('input', () => { saveEndpointState(); _updateCodegenPreview(); });
   }
+
+  /* Show a code preview immediately, before the request is ever sent —
+     reflects the current form state so it's useful right when the
+     endpoint opens, not just after hitting Execute. */
+  _updateCodegenPreview();
 
   /* Click a value in the response block — copy without quotes */
   document.getElementById('responseContent')?.addEventListener('click', e => {
@@ -804,9 +831,26 @@ function showEndpoint(path, method) {
     });
   });
 
-  document.getElementById('copyCurlBtn')?.addEventListener('click', () => {
-    copyToClipboard(_lastCurlCommand, 'cURL copied');
+  document.getElementById('copyCodegenBtn')?.addEventListener('click', () => {
+    const pre = document.getElementById('codegenPre');
+    copyToClipboard(pre?.textContent || '', `${CODEGEN_LANGS[_codegenLang].label} copied`);
   });
+
+  document.getElementById('codegenLangSelect')?.addEventListener('change', e => {
+    _codegenLang = e.target.value;
+    _renderCodegen();
+  });
+}
+
+/**
+ * (Re)renders the code-gen <pre> for the currently selected language
+ * from the last executed request's snapshot.
+ */
+function _renderCodegen() {
+  const pre = document.getElementById('codegenPre');
+  if (!pre || !_lastRequestSnapshot) return;
+  const { method, url, headers, json, multipart, form } = _lastRequestSnapshot;
+  pre.textContent = CODEGEN_LANGS[_codegenLang].build(method, url, headers, { json, multipart, form });
 }
 
 /**
@@ -830,6 +874,240 @@ function _buildCurlCommand(method, url, headers, { json, multipart, form } = {})
   }
 
   return lines.join(' \\\n');
+}
+
+/**
+ * Builds an equivalent JavaScript fetch() snippet
+ */
+function _buildJsFetch(method, url, headers, { json, multipart, form } = {}) {
+  const lines = [];
+
+  if (multipart && form) {
+    lines.push(`const formData = new FormData();`);
+    for (const [k, v] of form.entries()) {
+      if (v instanceof File) lines.push(`formData.append('${k}', /* File */ fileInput.files[0]); // ${v.name}`);
+      else lines.push(`formData.append('${k}', ${JSON.stringify(String(v))});`);
+    }
+    lines.push('');
+  }
+
+  lines.push(`const response = await fetch('${url}', {`);
+  lines.push(`  method: '${method}',`);
+  const hdrEntries = Object.entries(headers || {});
+  if (hdrEntries.length) {
+    lines.push(`  headers: {`);
+    hdrEntries.forEach(([k, v], i) => {
+      lines.push(`    ${JSON.stringify(k)}: ${JSON.stringify(String(v))}${i < hdrEntries.length - 1 ? ',' : ''}`);
+    });
+    lines.push(`  },`);
+  }
+  if (multipart && form) {
+    lines.push(`  body: formData,`);
+  } else if (json !== null && json !== undefined) {
+    const body = JSON.stringify(json, null, 2).split('\n').map((l, i) => i === 0 ? l : `  ${l}`).join('\n');
+    lines.push(`  body: JSON.stringify(${body}),`);
+  }
+  lines.push(`});`);
+  lines.push(``);
+  lines.push(`const data = await response.json();`);
+
+  return lines.join('\n');
+}
+
+/**
+ * Builds an equivalent Python (requests) snippet
+ */
+function _buildPythonRequests(method, url, headers, { json, multipart, form } = {}) {
+  const pyStr = s => `"${String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+  const lines = [`import requests`, ``, `url = ${pyStr(url)}`, ``];
+
+  const hdrEntries = Object.entries(headers || {});
+  if (hdrEntries.length) {
+    lines.push(`headers = {`);
+    hdrEntries.forEach(([k, v], i) => lines.push(`    ${pyStr(k)}: ${pyStr(v)}${i < hdrEntries.length - 1 ? ',' : ''}`));
+    lines.push(`}`);
+    lines.push('');
+  }
+
+  const callArgs = [`url`, `headers=headers`];
+
+  if (multipart && form) {
+    const fileEntries = [...form.entries()].filter(([, v]) => v instanceof File);
+    const dataEntries  = [...form.entries()].filter(([, v]) => !(v instanceof File));
+    if (fileEntries.length) {
+      lines.push(`files = {`);
+      fileEntries.forEach(([k, v], i) => lines.push(`    ${pyStr(k)}: open(${pyStr(v.name)}, "rb")${i < fileEntries.length - 1 ? ',' : ''}`));
+      lines.push(`}`);
+      callArgs.push('files=files');
+    }
+    if (dataEntries.length) {
+      lines.push(`data = {`);
+      dataEntries.forEach(([k, v], i) => lines.push(`    ${pyStr(k)}: ${pyStr(v)}${i < dataEntries.length - 1 ? ',' : ''}`));
+      lines.push(`}`);
+      callArgs.push('data=data');
+    }
+    lines.push('');
+  } else if (json !== null && json !== undefined) {
+    const body = JSON.stringify(json, null, 2).replace(/"""/g, '\\"\\"\\"');
+    lines.push(`payload = """${body}"""`);
+    callArgs.push('data=payload');
+    lines.push('');
+  }
+
+  lines.push(`response = requests.request(${pyStr(method)}, ${callArgs.join(', ')})`);
+  lines.push(`data = response.json()`);
+
+  return lines.join('\n');
+}
+
+/**
+ * Builds an equivalent C# (HttpClient) snippet
+ */
+function _buildCSharpHttpClient(method, url, headers, { json, multipart, form } = {}) {
+  const csVerbatim = s => `@"${String(s).replace(/"/g, '""')}"`;
+  const lines = [`using var client = new HttpClient();`];
+
+  const hdrEntries = Object.entries(headers || {}).filter(([k]) => k.toLowerCase() !== 'content-type');
+  for (const [k, v] of hdrEntries) {
+    lines.push(`client.DefaultRequestHeaders.Add(${csVerbatim(k)}, ${csVerbatim(v)});`);
+  }
+  lines.push('');
+
+  const methodPascal = method.charAt(0).toUpperCase() + method.slice(1).toLowerCase();
+
+  if (multipart && form) {
+    lines.push(`using var content = new MultipartFormDataContent();`);
+    for (const [k, v] of form.entries()) {
+      if (v instanceof File) lines.push(`// content.Add(new ByteArrayContent(fileBytes), ${csVerbatim(k)}, ${csVerbatim(v.name)});`);
+      else lines.push(`content.Add(new StringContent(${csVerbatim(v)}), ${csVerbatim(k)});`);
+    }
+    lines.push('');
+    lines.push(`using var response = await client.${['Get', 'Delete'].includes(methodPascal) ? methodPascal : 'PostAsync'}(${csVerbatim(url)}${['Get', 'Delete'].includes(methodPascal) ? '' : ', content'});`);
+  } else if (json !== null && json !== undefined) {
+    lines.push(`var json = ${csVerbatim(JSON.stringify(json, null, 2))};`);
+    lines.push(`using var content = new StringContent(json, Encoding.UTF8, "application/json");`);
+    lines.push('');
+    lines.push(`using var response = await client.${methodPascal === 'Put' ? 'PutAsync' : methodPascal === 'Patch' ? 'PatchAsync' : 'PostAsync'}(${csVerbatim(url)}, content);`);
+  } else {
+    lines.push(`using var response = await client.${methodPascal === 'Delete' ? 'DeleteAsync' : 'GetAsync'}(${csVerbatim(url)});`);
+  }
+
+  lines.push('');
+  lines.push(`var body = await response.Content.ReadAsStringAsync();`);
+
+  return lines.join('\n');
+}
+
+/**
+ * Builds an equivalent PowerShell (Invoke-RestMethod) snippet
+ */
+function _buildPowerShell(method, url, headers, { json, multipart, form } = {}) {
+  const psStr = s => `'${String(s).replace(/'/g, "''")}'`;
+  const lines = [];
+
+  const hdrEntries = Object.entries(headers || {});
+  if (hdrEntries.length) {
+    lines.push(`$headers = @{`);
+    hdrEntries.forEach(([k, v]) => lines.push(`    ${psStr(k)} = ${psStr(v)}`));
+    lines.push(`}`);
+    lines.push('');
+  }
+
+  const args = [`-Uri ${psStr(url)}`, `-Method ${psStr(method)}`];
+  if (hdrEntries.length) args.push('-Headers $headers');
+
+  if (multipart && form) {
+    lines.push(`$form = @{`);
+    for (const [k, v] of form.entries()) {
+      lines.push(v instanceof File
+        ? `    ${psStr(k)} = Get-Item ${psStr(v.name)}`
+        : `    ${psStr(k)} = ${psStr(v)}`);
+    }
+    lines.push(`}`);
+    lines.push('');
+    args.push('-Form $form');
+  } else if (json !== null && json !== undefined) {
+    lines.push(`$body = @'`);
+    lines.push(JSON.stringify(json, null, 2));
+    lines.push(`'@`);
+    lines.push('');
+    args.push('-Body $body');
+    args.push(`-ContentType 'application/json'`);
+  }
+
+  lines.push(`Invoke-RestMethod ${args.join(' ')}`);
+
+  return lines.join('\n');
+}
+
+/**
+ * Builds an equivalent Go (net/http) snippet
+ */
+function _buildGoNetHttp(method, url, headers, { json, multipart, form } = {}) {
+  const goStr = s => `"${String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+  const goRaw = s => String(s).includes('`') ? goStr(s) : `\`${s}\``;
+
+  const lines = [
+    `package main`,
+    ``,
+    `import (`,
+    `\t"fmt"`,
+    `\t"io"`,
+    `\t"net/http"`,
+  ];
+
+  if (multipart && form) {
+    lines.push(`\t"bytes"`, `\t"mime/multipart"`);
+  } else if (json !== null && json !== undefined) {
+    lines.push(`\t"strings"`);
+  }
+  lines.push(`)`, ``, `func main() {`, `\turl := ${goStr(url)}`, ``);
+
+  if (multipart && form) {
+    lines.push(`\tvar buf bytes.Buffer`);
+    lines.push(`\twriter := multipart.NewWriter(&buf)`);
+    for (const [k, v] of form.entries()) {
+      if (v instanceof File) {
+        lines.push(`\t// part, _ := writer.CreateFormFile(${goStr(k)}, ${goStr(v.name)})`);
+        lines.push(`\t// io.Copy(part, file) // open and copy the file into part`);
+      } else {
+        lines.push(`\twriter.WriteField(${goStr(k)}, ${goStr(v)})`);
+      }
+    }
+    lines.push(`\twriter.Close()`, ``);
+    lines.push(`\treq, err := http.NewRequest(${goStr(method)}, url, &buf)`);
+    lines.push(`\tif err != nil {`, `\t\tpanic(err)`, `\t}`, ``);
+    lines.push(`\treq.Header.Set("Content-Type", writer.FormDataContentType())`);
+  } else if (json !== null && json !== undefined) {
+    lines.push(`\tbody := strings.NewReader(${goRaw(JSON.stringify(json, null, 2))})`, ``);
+    lines.push(`\treq, err := http.NewRequest(${goStr(method)}, url, body)`);
+    lines.push(`\tif err != nil {`, `\t\tpanic(err)`, `\t}`, ``);
+  } else {
+    lines.push(`\treq, err := http.NewRequest(${goStr(method)}, url, nil)`);
+    lines.push(`\tif err != nil {`, `\t\tpanic(err)`, `\t}`, ``);
+  }
+
+  for (const [k, v] of Object.entries(headers || {})) {
+    lines.push(`\treq.Header.Set(${goStr(k)}, ${goStr(v)})`);
+  }
+
+  lines.push(
+    ``,
+    `\tres, err := http.DefaultClient.Do(req)`,
+    `\tif err != nil {`,
+    `\t\tpanic(err)`,
+    `\t}`,
+    `\tdefer res.Body.Close()`,
+    ``,
+    `\trespBody, err := io.ReadAll(res.Body)`,
+    `\tif err != nil {`,
+    `\t\tpanic(err)`,
+    `\t}`,
+    `\tfmt.Println(string(respBody))`,
+    `}`,
+  );
+
+  return lines.join('\n');
 }
 
 /**
@@ -876,19 +1154,15 @@ function _validateRequiredFields(ep, json) {
 }
 
 /**
- * Sends the HTTP request for the selected endpoint
+ * Collects the current form state (params, headers, body) for the open
+ * endpoint into a request snapshot — shared by the live code preview
+ * and the actual send. Returns null if there's nothing to build (no
+ * endpoint open) or { error: 'invalid-json' } if the body doesn't parse.
  */
-async function sendRequest() {
-  if (!currentEndpointData) return;
+function _buildRequestSnapshot(ep) {
+  if (!ep || !currentEndpointKey) return null;
 
-  const env = getCurrentEnv();
-  const ep  = currentEndpointData;
-  const btn = document.getElementById('executeRequestBtn');
-  const origHTML = btn.innerHTML;
-
-  btn.disabled  = true;
-  btn.innerHTML = '<svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="4" stroke-opacity=".3"/><path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 6.627 5.373 12 12 12v-4c-3.314 0-6-2.686-6-6z" fill="currentColor"/></svg>';
-
+  const env        = getCurrentEnv();
   const query      = {};
   const pathParams = {};
 
@@ -940,19 +1214,9 @@ async function sendRequest() {
       const ta = document.getElementById('requestBody');
       if (ta?.value) {
         try { json = JSON.parse(ta.value); }
-        catch { showToast('Invalid JSON in request body', 'error'); btn.innerHTML = origHTML; btn.disabled = false; return; }
+        catch { return { error: 'invalid-json' }; }
       }
     }
-  }
-
-  // Validate required fields before sending
-  const invalid = _validateRequiredFields(ep, json);
-  if (invalid.el) {
-    showToast(invalid.message, 'error');
-    invalid.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    invalid.el.focus?.();
-    btn.innerHTML = origHTML; btn.disabled = false;
-    return;
   }
 
   // Build URL
@@ -964,16 +1228,65 @@ async function sendRequest() {
   }
   if (qp.toString()) url += `?${qp.toString()}`;
 
-  if (json) headers['Content-Type'] = 'application/json';
-
   const method = currentEndpointKey.split(' ')[0].toUpperCase();
 
-  /* Build the cURL before sending — it reflects the request itself, not
-     the result, so we show it even on a network error */
-  _lastCurlCommand = _buildCurlCommand(method, url, json ? { ...headers, 'Content-Type': 'application/json' } : headers, { json, multipart, form });
-  const curlPre = document.getElementById('curlPre');
-  if (curlPre) curlPre.textContent = _lastCurlCommand;
-  document.getElementById('curlBlock')?.classList.remove('hidden');
+  return {
+    method, url,
+    headers: json ? { ...headers, 'Content-Type': 'application/json' } : headers,
+    json, multipart, form,
+  };
+}
+
+/**
+ * Refreshes the code preview from the current form state, without
+ * sending anything — called on endpoint open and on every relevant
+ * input change, so the snippet is useful before hitting Execute too.
+ * Silently no-ops on invalid JSON (the body's still being typed).
+ */
+function _updateCodegenPreview() {
+  const snapshot = _buildRequestSnapshot(currentEndpointData);
+  if (!snapshot || snapshot.error) return;
+  _lastRequestSnapshot = snapshot;
+  _renderCodegen();
+  document.getElementById('codegenBlock')?.classList.remove('hidden');
+}
+
+/**
+ * Sends the HTTP request for the selected endpoint
+ */
+async function sendRequest() {
+  if (!currentEndpointData) return;
+
+  const ep  = currentEndpointData;
+  const btn = document.getElementById('executeRequestBtn');
+  const origHTML = btn.innerHTML;
+
+  btn.disabled  = true;
+  btn.innerHTML = '<svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="4" stroke-opacity=".3"/><path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 6.627 5.373 12 12 12v-4c-3.314 0-6-2.686-6-6z" fill="currentColor"/></svg>';
+
+  const snapshot = _buildRequestSnapshot(ep);
+  if (snapshot?.error === 'invalid-json') {
+    showToast('Invalid JSON in request body', 'error');
+    btn.innerHTML = origHTML; btn.disabled = false;
+    return;
+  }
+  const { method, url, headers, json, multipart, form } = snapshot;
+
+  // Validate required fields before sending
+  const invalid = _validateRequiredFields(ep, json);
+  if (invalid.el) {
+    showToast(invalid.message, 'error');
+    invalid.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    invalid.el.focus?.();
+    btn.innerHTML = origHTML; btn.disabled = false;
+    return;
+  }
+
+  /* Refresh the code snapshot right before sending — it reflects the
+     request itself, not the result, so we show it even on a network error */
+  _lastRequestSnapshot = snapshot;
+  _renderCodegen();
+  document.getElementById('codegenBlock')?.classList.remove('hidden');
 
   const rb = document.getElementById('responseBlock');
   const rc = document.getElementById('responseContent');

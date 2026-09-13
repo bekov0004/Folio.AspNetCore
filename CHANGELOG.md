@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- Multi-language code generation for the "Send request" panel — the previous cURL-only block is now a "Code" block with a language picker (the site's own custom select, styled to match the rest of the UI) covering cURL, JavaScript (fetch), Python (requests), C# (HttpClient), Go (net/http), and PowerShell (Invoke-RestMethod)
+- The code snippet now shows before the request is ever sent, reflecting the current form state (params, headers, body) as you fill it in, not just after hitting Execute
+
+---
+
 ## [1.0.4] - 2026-09-13
 
 ### Fixed

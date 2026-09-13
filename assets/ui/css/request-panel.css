@@ -73,6 +73,14 @@ pre {
   color: var(--text-muted);
 }
 
+/* ── Code generation language picker — uses the site's own custom
+   select (.tc-select-wrap, built by initTcSelect() from controls.js),
+   just narrowed down from its default full-width layout to fit
+   inline next to the "Code" label. ── */
+.codegen-hd { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.codegen-lang-picker { flex-shrink: 0; width: 148px; }
+.codegen-lang-picker .tc-select-btn { padding: 6px 8px 6px 10px; font-size: 12px; }
+
 
 
 /* ── MISC / TAILWIND OVERRIDES ── */
