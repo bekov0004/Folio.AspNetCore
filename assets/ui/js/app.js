@@ -334,6 +334,14 @@ async function initApp() {
     if (headerTitleEl) headerTitleEl.textContent = SPECTRA_CONFIG.title;
   }
 
+  if (SPECTRA_CONFIG.logoutUrl) {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.href = SPECTRA_CONFIG.logoutUrl;
+      logoutBtn.style.display = '';
+    }
+  }
+
   try {
     const response = await fetch(OPENAPI_FILE);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);

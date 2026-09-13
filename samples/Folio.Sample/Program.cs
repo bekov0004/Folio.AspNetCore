@@ -4,9 +4,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+// User list for the Folio login gate, read from appsettings.json's "Users"
+// section — everything else (cookie issuance, the login/logout routes and
+// pages, wiring into UseFolio below) is handled by AddFolioAuth/UseFolioAuth.
+builder.Services.AddFolioAuth(options =>
+{
+    options.Users = builder.Configuration.GetSection("Users").Get<List<FolioUser>>() ?? [];
+    options.Title = "Folio Sample API";
+});
+
 var app = builder.Build();
 
 app.MapOpenApi();
+
+app.UseFolioAuth();
 
 app.UseFolio(options =>
 {

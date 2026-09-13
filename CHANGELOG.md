@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Multi-language code generation for the "Send request" panel — the previous cURL-only block is now a "Code" block with a language picker (the site's own custom select, styled to match the rest of the UI) covering cURL, JavaScript (fetch), Python (requests), C# (HttpClient), Go (net/http), and PowerShell (Invoke-RestMethod)
 - The code snippet now shows before the request is ever sent, reflecting the current form state (params, headers, body) as you fill it in, not just after hitting Execute
+- `FolioOptions.AuthorizationPolicy` — gate the Folio UI behind an ASP.NET Core authorization policy, integrating with whatever auth your app already has (cookie, JWT bearer, an external provider, ...) via the standard `IAuthorizationService`/challenge/forbid pipeline. Only protects the UI itself, not the underlying OpenAPI document or your API endpoints — see the XML docs for why and how to protect those separately
+- `FolioOptions.LogoutUrl` — shows a "Log out" button in the header, pointing wherever you set it; hidden entirely when unset
+- `AddFolioAuth()` / `UseFolioAuth()` — a self-contained, batteries-included alternative to the above for apps with no existing auth: give it a list of users (e.g. from configuration), and it handles cookie issuance, a branded login page matching Folio's own dark theme, and login/logout routes, then wires itself into `UseFolio(...)` automatically (no need to set `AuthorizationPolicy`/`LogoutUrl` by hand)
 
 ### Changed
 - Response headers moved out of the colored response body box into their own neutral, collapsed-by-default section, so they no longer compete with the response body for attention
