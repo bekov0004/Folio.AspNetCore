@@ -71,11 +71,68 @@ against the spec's security schemes (`apiKey`, HTTP Bearer/Basic).
 
 ## Options (`FolioOptions`)
 
-| Property      | Default               | Description                                                          |
-|---------------|------------------------|------------------------------------------------------------------------|
-| `RoutePrefix` | `"folio"`             | Path the UI is served under (no leading/trailing slashes).            |
-| `SpecUrl`     | `"/openapi/v1.json"`  | URL of the OpenAPI document — required for a real project.            |
-| `Title`       | `null`                | Page/header title. Falls back to the spec's `info.title` if not set.  |
+| Property             | Default               | Description                                                            |
+|----------------------|------------------------|--------------------------------------------------------------------------|
+| `RoutePrefix`        | `"folio"`             | Path the UI is served under (no leading/trailing slashes).              |
+| `SpecUrl`            | `"/openapi/v1.json"`  | URL of the OpenAPI document — required for a real project.              |
+| `Title`              | `null`                | Page/header title. Falls back to the spec's `info.title` if not set.    |
+| `AuthorizationPolicy`| `null`                | Name of an ASP.NET Core authorization policy the UI is gated behind. See [Authorization](#authorization). |
+| `LogoutUrl`          | `null`                | Shows a "Log out" button in the header, pointing here. Hidden if unset. |
+
+## Authorization
+
+By default the UI is open to anyone who can reach the route. Two ways to gate it:
+
+**You already have auth in your app** (cookie, JWT bearer, ASP.NET Core
+Identity, an external provider, ...) — point `AuthorizationPolicy` at a
+policy name and Folio integrates with it the same way a normal
+`[Authorize]` endpoint would:
+
+```csharp
+builder.Services.AddAuthorization(options =>
+    options.AddPolicy("FolioAccess", policy => policy.RequireAuthenticatedUser()));
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseFolio(options =>
+{
+    options.SpecUrl = "/openapi/v1.json";
+    options.AuthorizationPolicy = "FolioAccess";
+    options.LogoutUrl = "/account/logout"; // wherever your app signs out
+});
+```
+
+> **Note:** this only gates the Folio UI itself — it doesn't protect the
+> underlying OpenAPI document or your actual API endpoints. Protect those
+> the same way you'd protect any other endpoint.
+
+**You have no auth system yet** and just want to put a login in front of
+the docs — `AddFolioAuth`/`UseFolioAuth` is a self-contained alternative:
+give it a list of users and it handles cookie issuance, a login page
+(styled to match Folio's own dark theme), and the login/logout routes,
+wiring itself into `UseFolio(...)` automatically:
+
+```csharp
+builder.Services.AddFolioAuth(options =>
+{
+    options.Users = builder.Configuration.GetSection("Users").Get<List<FolioUser>>() ?? [];
+});
+
+var app = builder.Build();
+
+app.UseFolioAuth();
+app.UseFolio(options => options.SpecUrl = "/openapi/v1.json");
+```
+
+```json
+// appsettings.json
+{
+  "Users": [
+    { "Username": "admin", "Password": "correct-horse-battery-staple" }
+  ]
+}
+```
 
 ## How it works
 
