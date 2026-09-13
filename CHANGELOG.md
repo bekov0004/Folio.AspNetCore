@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.4] - 2026-09-13
+
+### Fixed
+- Screenshots section on nuget.org rendering as literal HTML tag text instead of an image gallery — nuget.org's README renderer escapes raw HTML (unlike GitHub's), so the hand-written `<table>` markup never rendered; switched to plain Markdown pipe-tables with `![]()` images, which render identically on both platforms. This was meant to ship in 1.0.3 but that publish still had the pre-fix README baked in, so 1.0.3 was unlisted and this fix went out as 1.0.4 instead.
+
+---
+
 ## [1.0.3] - 2026-09-13
 
 ### Changed
@@ -15,7 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Horizontal page scroll — `body` was missing `overflow-x: hidden`, so the sidebar resizer's `-8px` offset extended the document's scrollable width; also fixed the mobile environment dropdown using a `100vw`-based width anchored to a non-viewport parent, which could push it past the screen edge
 - "Send request" button stuck in the mobile "More" overflow menu instead of taking over the Schema button's slot in the main panel row while an endpoint is open — a prior UI commit had accidentally moved the Schema button's bar anchor into the overflow container along with it
-- Screenshots section on nuget.org rendering as literal HTML tag text instead of an image gallery — nuget.org's README renderer escapes raw HTML (unlike GitHub's), so the hand-written `<table>` markup never rendered; switched to plain Markdown pipe-tables with `![]()` images, which render identically on both platforms
+
+> **Note:** unlisted on nuget.org — the published package still had the pre-fix README with the broken screenshots table (see 1.0.4).
 
 ---
 
