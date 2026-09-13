@@ -22,30 +22,50 @@ pre {
 .response-block {
   margin-top: 1rem; padding: 1rem; border-radius: 8px;
   font-family: 'JetBrains Mono', monospace;
-  white-space: pre; overflow-x: auto; max-width: 100%;
-  position: relative; font-size: 12.5px;
+  overflow-x: auto; max-width: 100%;
+  font-size: 12.5px;
+}
+.response-status-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
 }
 .response-status {
-  position: absolute; top: .35rem; left: .6rem;
   font-size: 10px; font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
   padding: 2px 7px; border-radius: 4px; letter-spacing: 0.5px;
 }
-.response-duration { font-weight: 500; opacity: 0.85; text-transform: none; letter-spacing: 0; }
+.response-duration { font-size: 10px; font-weight: 500; opacity: 0.85; letter-spacing: 0; }
 
-.response-body-wrap { padding-top: 1.75rem; }
-
-/* ── Response headers ── */
-.response-headers {
-  padding-bottom: 8px; margin-bottom: 8px;
-  border-bottom: 1px dashed rgba(255,255,255,0.15);
+/* ── Response headers — standalone collapsible block, separate from
+   the (green/red) response body so headers don't compete with the
+   body for attention. Collapsed by default. ── */
+.response-headers-block {
+  margin-bottom: 14px; border-radius: 8px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+}
+.response-headers-summary {
+  padding: 8px 12px; cursor: pointer; user-select: none;
+  font-family: 'Lexend', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--text-secondary); list-style: none;
+}
+.response-headers-summary::-webkit-details-marker { display: none; }
+.response-headers-summary::before {
+  content: '▸'; display: inline-block; margin-right: 6px;
+  transition: transform 0.15s; color: var(--text-muted);
+}
+.response-headers-block[open] .response-headers-summary::before { transform: rotate(90deg); }
+.response-headers-count { color: var(--text-muted); font-weight: 500; }
+#responseHeadersContent {
+  padding: 4px 12px 10px;
   display: flex; flex-direction: column; gap: 2px;
+  border-top: 1px solid var(--border);
 }
 .response-header-row {
-  display: flex; gap: 8px; font-size: 11px; line-height: 1.5;
+  display: flex; gap: 8px; font-size: 11px; line-height: 1.6;
+  padding-top: 6px;
 }
-.response-header-key { opacity: 0.65; flex-shrink: 0; }
-.response-header-val { opacity: 0.95; word-break: break-all; }
+.response-header-key { opacity: 0.65; flex-shrink: 0; min-width: 132px; color: var(--text-secondary); }
+.response-header-val { opacity: 0.95; word-break: break-all; flex: 1 1 auto; min-width: 0; color: var(--text-primary); }
 
 /* ── Response code tabs (example response from spec) ── */
 .resp-code-tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }

@@ -700,11 +700,15 @@ function showEndpoint(path, method) {
       ).join('')}</div>`
     : '';
 
-  formContent += epSection('Response', preferredCode || '', `
+  formContent += epSection('Response', '', `
     <div id="responseBlock" class="hidden" style="position:relative;margin-bottom:14px;">
       ${jsonActionBtnsHtml('copyResponseBtn', 'downloadResponseBtn')}
       <div id="responseContent" class="response-block"></div>
     </div>
+    <details id="responseHeadersBlock" class="hidden response-headers-block">
+      <summary class="response-headers-summary">Response headers <span id="responseHeadersCount" class="response-headers-count"></span></summary>
+      <div id="responseHeadersContent"></div>
+    </details>
     <div id="codegenBlock" class="hidden" style="margin-bottom:14px;">
       <div class="codegen-hd">
         <div class="curl-label">
@@ -1115,10 +1119,33 @@ function _buildGoNetHttp(method, url, headers, { json, multipart, form } = {}) {
  */
 function _responseHeadersHtml(entries) {
   if (!entries.length) return '';
-  const rows = entries
-    .map(([k, v]) => `<div class="response-header-row"><span class="response-header-key">${escapeHtml(k)}</span><span class="response-header-val">${escapeHtml(v)}</span></div>`)
+  return entries
+    .map(([k, v]) => `<div class="response-header-row"><span class="response-header-key">${escapeHtml(k)}:</span><span class="response-header-val">${escapeHtml(v)}</span></div>`)
     .join('');
-  return `<div class="response-headers">${rows}</div>`;
+}
+
+/**
+ * Fills the standalone "Response headers" <details> block, separate
+ * from the (green/red) response body box so headers don't compete
+ * with the body for attention — collapsed by default.
+ */
+function _renderResponseHeaders(entries) {
+  const block   = document.getElementById('responseHeadersBlock');
+  const content = document.getElementById('responseHeadersContent');
+  const count   = document.getElementById('responseHeadersCount');
+  if (!block || !content || !count) return;
+
+  if (!entries.length) {
+    block.classList.add('hidden');
+    content.innerHTML = '';
+    count.textContent = '';
+    return;
+  }
+
+  content.innerHTML = _responseHeadersHtml(entries);
+  count.textContent = `(${entries.length})`;
+  block.classList.remove('hidden');
+  block.open = false;
 }
 
 /**
@@ -1291,6 +1318,7 @@ async function sendRequest() {
   const rb = document.getElementById('responseBlock');
   const rc = document.getElementById('responseContent');
   document.getElementById('responseExample')?.classList.add('hidden');
+  document.getElementById('responseHeadersBlock')?.classList.add('hidden');
   rb.classList.add('hidden');
 
   const t0 = performance.now();
@@ -1321,22 +1349,29 @@ async function sendRequest() {
     const resHeaders = [...res.headers.entries()];
 
     rc.innerHTML = `
-      <div class="response-status ${ok ? 'bg-green-500' : 'bg-red-500'} text-white">${st} <span class="response-duration">· ${durMs} ms</span></div>
-      <div class="response-body-wrap ${ok ? 'text-green-200' : 'text-red-200'}">
-        ${_responseHeadersHtml(resHeaders)}
-        <pre>${ct?.includes('application/json') ? highlightJson(body) : escapeHtml(body)}</pre>
-      </div>`;
-    rc.className = `response-block p-4 rounded-lg ${ok ? 'bg-green-900/30 border border-green-800' : 'bg-red-900/30 border border-red-800'}`;
+      <div class="response-status-row">
+        <span class="response-status ${ok ? 'bg-green-500' : 'bg-red-500'} text-white">${st}</span>
+        <span class="response-duration">${durMs} ms</span>
+      </div>
+      <pre>${ct?.includes('application/json') ? highlightJson(body) : escapeHtml(body)}</pre>`;
+    rc.className = `response-block p-4 rounded-lg ${ok ? 'bg-green-900/30 border border-green-800 text-green-200' : 'bg-red-900/30 border border-red-800 text-red-200'}`;
     rb.classList.remove('hidden');
+    _renderResponseHeaders(resHeaders);
     bindResponseActions(body);
     saveEndpointState();
     scrollToResponse(rb);
 
   } catch (err) {
     const durMs = Math.round(performance.now() - t0);
-    rc.innerHTML = `<div class="response-status bg-red-500 text-white">Network error <span class="response-duration">· ${durMs} ms</span></div><div class="response-body-wrap text-red-200"><pre>${escapeHtml(err.message)}</pre></div>`;
-    rc.className = 'response-block p-4 rounded-lg bg-red-900/30 border border-red-800';
+    rc.innerHTML = `
+      <div class="response-status-row">
+        <span class="response-status bg-red-500 text-white">Network error</span>
+        <span class="response-duration">${durMs} ms</span>
+      </div>
+      <pre>${escapeHtml(err.message)}</pre>`;
+    rc.className = 'response-block p-4 rounded-lg bg-red-900/30 border border-red-800 text-red-200';
     rb.classList.remove('hidden');
+    _renderResponseHeaders([]);
     bindResponseActions(err.message);
     saveEndpointState();
     scrollToResponse(rb);

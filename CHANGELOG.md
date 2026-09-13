@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-language code generation for the "Send request" panel — the previous cURL-only block is now a "Code" block with a language picker (the site's own custom select, styled to match the rest of the UI) covering cURL, JavaScript (fetch), Python (requests), C# (HttpClient), Go (net/http), and PowerShell (Invoke-RestMethod)
 - The code snippet now shows before the request is ever sent, reflecting the current form state (params, headers, body) as you fill it in, not just after hitting Execute
 
+### Changed
+- Response headers moved out of the colored response body box into their own neutral, collapsed-by-default section, so they no longer compete with the response body for attention
+- Removed the redundant response-code badge next to the "Response" section title (the spec's documented code) — it sat right above the actual executed status once you hit Execute, showing what looked like two different "200"s at once
+
+### Fixed
+- Response block had a large unexplained gap between the status line and the body — the container had `white-space: pre` intended for its `<pre>` content, but applied at the wrong level it also preserved the whitespace/newlines between the status row and the body in the template markup as visible blank space
+- Response headers rendered as bare key/value pairs with no separator between them (e.g. `content-type` directly followed by `application/json...` with no colon), making long values hard to tell apart from the header name
+
 ---
 
 ## [1.0.4] - 2026-09-13
