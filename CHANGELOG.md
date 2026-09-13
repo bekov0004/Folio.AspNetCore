@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - UI assets (`index.html`, `css/`, `js/`, `fonts/`) are now vendored into this repo under `assets/ui/` instead of being embedded directly from the private prototype repo at build time — everything compiled into the package is now visible in this public repo
 
+### Fixed
+- Horizontal page scroll — `body` was missing `overflow-x: hidden`, so the sidebar resizer's `-8px` offset extended the document's scrollable width; also fixed the mobile environment dropdown using a `100vw`-based width anchored to a non-viewport parent, which could push it past the screen edge
+
 ---
 
 ## [1.0.2] - 2026-08-10
