@@ -347,12 +347,23 @@ async function initApp() {
     }
   }
 
+  if (SPECTRA_CONFIG.showTryItOut === false) {
+    document.getElementById('executeRequestBtn')?.style.setProperty('display', 'none');
+  }
+  if (SPECTRA_CONFIG.showSchema === false) {
+    document.getElementById('schemaViewBtn')?.style.setProperty('display', 'none');
+  }
+
   /* Best-effort — an older Folio version, a 404, or plain local dev
-     without the package should never block loading the spec itself. */
-  try {
-    const rolesResponse = await fetch('api/roles');
-    if (rolesResponse.ok) FOLIO_ROLES = await rolesResponse.json();
-  } catch { /* no roles endpoint available — fine, badges just won't show */ }
+     without the package should never block loading the spec itself.
+     Skipped entirely when showRoles is off — no point fetching data
+     that won't be rendered. */
+  if (SPECTRA_CONFIG.showRoles !== false) {
+    try {
+      const rolesResponse = await fetch('api/roles');
+      if (rolesResponse.ok) FOLIO_ROLES = await rolesResponse.json();
+    } catch { /* no roles endpoint available — fine, badges just won't show */ }
+  }
 
   try {
     const response = await fetch(OPENAPI_FILE);

@@ -37,7 +37,7 @@ public sealed class FolioMiddleware
 
     /// <summary>
     /// Created by the framework via <c>UseMiddleware&lt;FolioMiddleware&gt;</c> —
-    /// don't call this directly, use <see cref="FolioMiddlewareExtensions.UseFolio"/>.
+    /// don't call this directly, use <see cref="FolioMiddlewareExtensions.UseFolio(IApplicationBuilder, Action{FolioOptions})"/>.
     /// </summary>
     public FolioMiddleware(
         RequestDelegate next,
@@ -256,7 +256,9 @@ public sealed class FolioMiddleware
             html = reader.ReadToEnd();
         }
 
-        var config = new FolioClientConfig(options.SpecUrl, options.Title, logoutUrl);
+        var config = new FolioClientConfig(
+            options.SpecUrl, options.Title, logoutUrl,
+            options.ShowTryItOut, options.ShowRoles, options.ShowCodeGenerator, options.ShowSchema);
         var configJson = JsonSerializer.Serialize(config, FolioJsonContext.Default.FolioClientConfig);
         var configScript = $"<script>window.__SPECTRA_CONFIG__ = {configJson};</script>";
 
@@ -270,7 +272,9 @@ public sealed class FolioMiddleware
     }
 }
 
-internal sealed record FolioClientConfig(string SpecUrl, string? Title, string? LogoutUrl);
+internal sealed record FolioClientConfig(
+    string SpecUrl, string? Title, string? LogoutUrl,
+    bool ShowTryItOut, bool ShowRoles, bool ShowCodeGenerator, bool ShowSchema);
 
 [JsonSerializable(typeof(FolioClientConfig))]
 [JsonSerializable(typeof(Dictionary<string, string[]>))]

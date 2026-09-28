@@ -82,6 +82,39 @@ against the spec's security schemes (`apiKey`, HTTP Bearer/Basic).
 | `Title`              | `null`                | Page/header title. Falls back to the spec's `info.title` if not set.    |
 | `AuthorizationPolicy`| `null`                | Name of an ASP.NET Core authorization policy the UI is gated behind. See [Authorization](#authorization). |
 | `LogoutUrl`          | `null`                | Shows a "Log out" button in the header, pointing here. Hidden if unset. |
+| `ShowTryItOut`       | `true`                | Shows the "Send request" button that executes real requests against your API. |
+| `ShowRoles`          | `true`                | Shows the role badges/popover read from your endpoints' own `[Authorize(Roles = "...")]`. |
+| `ShowCodeGenerator`  | `true`                | Shows the multi-language code generator (cURL/JS/Python/C#/Go/PowerShell) in the request panel. |
+| `ShowSchema`         | `true`                | Shows the Schema button for viewing a model's JSON schema. |
+
+Set any of these directly in code:
+
+```csharp
+app.UseFolio(options =>
+{
+    options.SpecUrl = "/openapi/v1.json";
+    options.ShowTryItOut = false;
+});
+```
+
+Or bind them from `appsettings.json` (or any other `IConfiguration` source) — Folio never reads configuration on its own, so this only happens if you call it explicitly, the same way Serilog's `ReadFrom.Configuration(...)` works:
+
+```json
+{
+  "Folio": {
+    "ShowTryItOut": false,
+    "ShowCodeGenerator": false
+  }
+}
+```
+
+```csharp
+app.UseFolio((context, options) =>
+{
+    options.SpecUrl = "/openapi/v1.json";
+    options.ReadFrom.Configuration(context.Configuration, "Folio");
+});
+```
 
 ## Authorization
 

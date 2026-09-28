@@ -26,7 +26,7 @@ function groupEndpointsByTag(paths) {
  * Builds the HTML for a single endpoint item
  */
 function endpointItemHTML(ep) {
-  const roles = FOLIO_ROLES[`${ep.method} ${ep.path}`];
+  const roles = SPECTRA_CONFIG.showRoles !== false ? FOLIO_ROLES[`${ep.method} ${ep.path}`] : null;
   return `
     <div class="endpoint-item" data-path="${escapeHtml(ep.path)}" data-method="${ep.method}">
       <div class="endpoint-item__header">

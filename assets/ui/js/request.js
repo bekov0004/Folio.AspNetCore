@@ -609,7 +609,7 @@ function showEndpoint(path, method) {
   //    the package). Rendered as a small icon next to the endpoint header
   //    with a hover popover listing the roles — see accessIconHtml() below.
   //    Omitted entirely when the endpoint has no role requirement. ──
-  const requiredRoles = FOLIO_ROLES[`${method} ${path}`];
+  const requiredRoles = SPECTRA_CONFIG.showRoles !== false ? FOLIO_ROLES[`${method} ${path}`] : null;
 
   // ── Parameters — path and query (header params moved to the "Headers" section) ──
   const paramOrder = ['path', 'query'];
@@ -716,6 +716,7 @@ function showEndpoint(path, method) {
       <summary class="response-headers-summary">Response headers <span id="responseHeadersCount" class="response-headers-count"></span></summary>
       <div id="responseHeadersContent"></div>
     </details>
+    ${SPECTRA_CONFIG.showCodeGenerator !== false ? `
     <div id="codegenBlock" class="hidden" style="margin-bottom:14px;">
       <div class="codegen-hd">
         <div class="curl-label">
@@ -736,7 +737,7 @@ function showEndpoint(path, method) {
         ${jsonActionBtnsHtml('copyCodegenBtn')}
         <pre class="code-block" id="codegenPre"></pre>
       </div>
-    </div>
+    </div>` : ''}
     ${codeTabsHtml}
     <div id="responseExample"></div>`);
 

@@ -20,10 +20,15 @@ app.MapOpenApi();
 
 app.UseFolioAuth();
 
-app.UseFolio(options =>
+app.UseFolio((context, options) =>
 {
     options.SpecUrl = "/openapi/v1.json";
     options.Title = "Folio Sample API";
+
+    // Explicit opt-in — Folio never reads appsettings.json on its own.
+    // This binds the "Folio" section (see appsettings.json) onto the
+    // same ShowXxx flags settable above in code; whichever runs last wins.
+    options.ReadFrom.Configuration(context.Configuration, "Folio");
 });
 
 app.MapGet("/api/hello", (string? name) => Results.Ok(new { message = $"Hello, {name ?? "world"}!" }))

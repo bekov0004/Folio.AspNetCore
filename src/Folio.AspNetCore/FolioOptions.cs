@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+
 namespace Folio.AspNetCore;
 
 /// <summary>
-/// Folio UI settings, configured in <see cref="FolioMiddlewareExtensions.UseFolio"/>.
+/// Folio UI settings, configured in <see cref="FolioMiddlewareExtensions.UseFolio(IApplicationBuilder, Action{FolioOptions})"/>.
 /// </summary>
 public sealed class FolioOptions
 {
@@ -61,4 +64,75 @@ public sealed class FolioOptions
     /// sign-out endpoint, or your identity provider's logout URL).
     /// </summary>
     public string? LogoutUrl { get; set; }
+
+    /// <summary>
+    /// Shows the "Send request" button, letting users execute real requests
+    /// against your API from the UI. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowTryItOut { get; set; } = true;
+
+    /// <summary>
+    /// Shows the required-role badges/popover derived from your endpoints'
+    /// own <c>[Authorize(Roles = "...")]</c> metadata (see
+    /// <see cref="FolioRoleReader"/>). Default: <c>true</c>.
+    /// </summary>
+    public bool ShowRoles { get; set; } = true;
+
+    /// <summary>
+    /// Shows the multi-language code generator (cURL/JS/Python/C#/Go/PowerShell)
+    /// in the request panel. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowCodeGenerator { get; set; } = true;
+
+    /// <summary>
+    /// Shows the Schema tab for viewing a request/response model's JSON
+    /// schema. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowSchema { get; set; } = true;
+
+    /// <summary>
+    /// Binds settings from an external configuration source (e.g.
+    /// <c>appsettings.json</c>) onto these options. Folio never reads
+    /// configuration on its own — this only runs when you call it
+    /// explicitly, the same way Serilog's
+    /// <c>configuration.ReadFrom.Configuration(...)</c> works.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// app.UseFolio((context, options) =>
+    /// {
+    ///     options.SpecUrl = "/openapi/v1.json";
+    ///     options.ReadFrom.Configuration(context.Configuration, "Folio");
+    /// });
+    /// </code>
+    /// </example>
+    public FolioOptionsReadFrom ReadFrom => new(this);
+}
+
+/// <summary>
+/// Explicit configuration-binding entry point for <see cref="FolioOptions"/>,
+/// reached via <see cref="FolioOptions.ReadFrom"/>.
+/// </summary>
+public readonly struct FolioOptionsReadFrom
+{
+    private readonly FolioOptions _options;
+
+    internal FolioOptionsReadFrom(FolioOptions options) => _options = options;
+
+    /// <summary>
+    /// Binds the given <paramref name="sectionName"/> section of
+    /// <paramref name="configuration"/> onto these options, by property name
+    /// (e.g. a JSON <c>"ShowTryItOut": false</c> sets
+    /// <see cref="FolioOptions.ShowTryItOut"/>). Only touches properties
+    /// present in the section — anything already set in code beforehand, or
+    /// left at its default, is preserved for keys the section doesn't
+    /// contain.
+    /// </summary>
+    /// <param name="configuration">The configuration to read from — typically your app's own, e.g. from a <c>context</c> parameter or <c>builder.Configuration</c>.</param>
+    /// <param name="sectionName">The section name to bind. Defaults to <c>"Folio"</c>.</param>
+    public void Configuration(IConfiguration configuration, string sectionName = "Folio")
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+        configuration.GetSection(sectionName).Bind(_options);
+    }
 }
