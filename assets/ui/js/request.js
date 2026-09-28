@@ -604,6 +604,13 @@ function showEndpoint(path, method) {
   let initBody       = '';
   _currentBodySchema = null;
 
+  // ── Access — roles required to reach this endpoint, read straight from
+  //    the host app's own [Authorize(Roles=...)] (see FolioRoleReader in
+  //    the package). Rendered as a small icon next to the endpoint header
+  //    with a hover popover listing the roles — see accessIconHtml() below.
+  //    Omitted entirely when the endpoint has no role requirement. ──
+  const requiredRoles = FOLIO_ROLES[`${method} ${path}`];
+
   // ── Parameters — path and query (header params moved to the "Headers" section) ──
   const paramOrder = ['path', 'query'];
   const grouped    = {};
@@ -739,6 +746,18 @@ function showEndpoint(path, method) {
         <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;${ep.summary ? 'margin-bottom:8px;' : ''}min-width:0;">
           <span class="method-badge method-${method.toLowerCase()}" style="font-size:12px;padding:4px 10px;flex-shrink:0;">${method}</span>
           <h2 style="flex:1;">${escapeHtml(path)}</h2>
+          ${requiredRoles?.length ? `
+          <span class="access-icon-wrap">
+            <span class="access-icon" tabindex="0" aria-label="Requires role: ${escapeHtml(requiredRoles.join(', '))}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+            </span>
+            <div class="access-popover">
+              <div class="access-popover__title">Requires role</div>
+              <div class="access-popover__roles">
+                ${requiredRoles.map(r => `<span class="role-chip">${escapeHtml(r)}</span>`).join('')}
+              </div>
+            </div>
+          </span>` : ''}
         </div>
         ${ep.summary     ? `<p style="font-size:13px;color:var(--text-muted);margin-bottom:${ep.description ? '4px' : '0'};">${escapeHtml(ep.summary)}</p>` : ''}
         ${ep.description ? `<div class="ep-description">${marked.parse(ep.description)}</div>` : ''}

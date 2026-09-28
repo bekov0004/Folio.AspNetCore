@@ -1,4 +1,5 @@
 using Folio.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,11 @@ app.MapGet("/api/items/{id:int}", (int id) => Results.Ok(new { id, name = $"Item
     .WithName("GetItemById");
 
 app.MapPost("/api/items", (CreateItemRequest request) => Results.Created($"/api/items/1", new { id = 1, request.Name }))
-    .WithName("CreateItem");
+    .WithName("CreateItem")
+    // Real role requirement, read straight from this metadata by
+    // FolioRoleReader — nothing Folio-specific needed here, this is
+    // just the normal way to require a role on a minimal API endpoint.
+    .RequireAuthorization(new AuthorizeAttribute { Roles = "Admin" });
 
 /* ── 2xx-family sample endpoints ──
    /api/hello (200) and the items endpoints above already cover the
@@ -44,7 +49,8 @@ app.MapGet("/api/success/201", () => Results.Json(
         statusCode: StatusCodes.Status201Created))
     .WithName("CreatedExample")
     .WithSummary("201 Created")
-    .WithDescription("Simulates a resource creation response (same status as POST /api/items).");
+    .WithDescription("Simulates a resource creation response (same status as POST /api/items).")
+    .RequireAuthorization(new AuthorizeAttribute { Roles = "Admin,Seller,Support" });
 
 app.MapGet("/api/success/202", () => Results.Json(
         new { jobId = "job_8f2a1c", status = "queued", message = "The request has been accepted for background processing." },

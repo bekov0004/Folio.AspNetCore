@@ -26,11 +26,15 @@ function groupEndpointsByTag(paths) {
  * Builds the HTML for a single endpoint item
  */
 function endpointItemHTML(ep) {
+  const roles = FOLIO_ROLES[`${ep.method} ${ep.path}`];
   return `
     <div class="endpoint-item" data-path="${escapeHtml(ep.path)}" data-method="${ep.method}">
       <div class="endpoint-item__header">
         <span class="method-badge method-${ep.method.toLowerCase()}">${ep.method}</span>
         <span class="text-sm text-gray-700 dark:text-gray-300 font-mono" data-tooltip="${escapeHtml(ep.path)}">${escapeHtml(ep.path)}</span>
+        ${roles?.length ? `
+        <span class="role-badge role-badge--collapsed" data-tooltip="Requires role: ${escapeHtml(roles.join(', '))}">${escapeHtml(roles[0])}${roles.length > 1 ? ` +${roles.length - 1}` : ''}</span>
+        <span class="role-badge-list">${roles.map(r => `<span class="role-badge role-badge--chip">${escapeHtml(r)}</span>`).join('')}</span>` : ''}
       </div>
     </div>`;
 }

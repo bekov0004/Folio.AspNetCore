@@ -306,6 +306,14 @@
   transform: translateX(-50%) translateY(0);
 }
 
+/* Multi-line variant — for tooltips whose data-tooltip text contains
+   literal newlines (e.g. a role list, one per line) instead of a single
+   short label. */
+.tooltip-lines[data-tooltip]::after {
+  white-space: pre-line;
+  text-align: left;
+}
+
 /* Aligns to the right edge — for elements near the right edge of the
    screen that have nowhere to center without being clipped by the viewport. */
 .tooltip-right[data-tooltip]::after { left: auto; right: 0; transform: translateY(-4px); }

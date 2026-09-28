@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -119,6 +120,12 @@ public sealed class FolioMiddleware
             return;
         }
 
+        if (remaining == "/api/roles")
+        {
+            await WriteRolesJsonAsync(httpContext);
+            return;
+        }
+
         // Without a trailing slash, relative paths ("css/layout.css") inside
         // index.html would resolve outside the prefix — redirect instead.
         if (remaining == PathString.Empty && request.Path.Value is { } p && !p.EndsWith('/'))
@@ -201,6 +208,27 @@ public sealed class FolioMiddleware
         return false;
     }
 
+    /// <summary>
+    /// Serves the role map built by <see cref="FolioRoleReader"/> — resolved
+    /// per-request from <see cref="HttpContext.RequestServices"/> (not
+    /// injected into the constructor) so it always reflects every endpoint
+    /// mapped by the time the request arrives, regardless of whether
+    /// <c>UseFolio(...)</c> happened to run before or after the host app's
+    /// own <c>Map*</c> calls in <c>Program.cs</c> — endpoint registration
+    /// order doesn't matter, only that it's finished by request time, which
+    /// it always is once <c>app.Run()</c> is reached.
+    /// </summary>
+    private static async Task WriteRolesJsonAsync(HttpContext httpContext)
+    {
+        var dataSources = httpContext.RequestServices.GetService<IEnumerable<EndpointDataSource>>()
+            ?? Enumerable.Empty<EndpointDataSource>();
+        var map = FolioRoleReader.BuildRoleMap(dataSources);
+
+        httpContext.Response.ContentType = "application/json; charset=utf-8";
+        await JsonSerializer.SerializeAsync(
+            httpContext.Response.Body, map, FolioJsonContext.Default.DictionaryStringStringArray, httpContext.RequestAborted);
+    }
+
     private async Task WriteIndexHtmlAsync(HttpContext httpContext)
     {
         var response = httpContext.Response;
@@ -245,6 +273,7 @@ public sealed class FolioMiddleware
 internal sealed record FolioClientConfig(string SpecUrl, string? Title, string? LogoutUrl);
 
 [JsonSerializable(typeof(FolioClientConfig))]
+[JsonSerializable(typeof(Dictionary<string, string[]>))]
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     GenerationMode = JsonSourceGenerationMode.Serialization)]

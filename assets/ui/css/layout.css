@@ -76,6 +76,11 @@ header {
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
+  /* Lets child rules react to the sidebar's own resized width (drag handle,
+     restored from localStorage) via @container queries below — e.g. the
+     role badge only has room once the panel is wide enough. */
+  container-type: inline-size;
+  container-name: sidebar;
 }
 
 /* ── SIDEBAR (scrollable content) ── */

@@ -60,3 +60,40 @@
 .method-patch  { color: #b57fff; background: rgba(181,127,255,0.1); }
 .method-delete { color: #ff5e7a; background: rgba(255,94,122,0.1); }
 
+/* ── ROLE BADGE — shown next to an endpoint that requires a role,
+   read straight from the host app's own [Authorize(Roles=...)].
+   The sidebar is already tight on space, so this only shows once the
+   (resizable) panel is wide enough to fit it comfortably — hidden by
+   default, revealed via the @container rules below. Two representations
+   are rendered up front (see sidebar.js) and toggled by container width:
+   a collapsed "FirstRole +N" pill from 300px, and — once there's real
+   room — the full role list as individual chips from 420px. ── */
+.role-badge {
+  display: none;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600; font-size: 9.5px;
+  letter-spacing: 0.3px;
+  border-radius: 4px; padding: 2px 6px;
+  color: #ffb347; background: rgba(255,179,71,0.1);
+  border: 1px solid rgba(255,179,71,0.25);
+  white-space: nowrap; flex-shrink: 0;
+}
+.role-badge--collapsed {
+  max-width: 90px; overflow: hidden; text-overflow: ellipsis;
+}
+.role-badge-list {
+  display: none;
+  align-items: center; gap: 4px;
+  margin-left: auto; flex-shrink: 0;
+  overflow: hidden;
+}
+@container sidebar (min-width: 300px) {
+  .role-badge--collapsed { display: inline-flex; margin-left: auto; }
+}
+@container sidebar (min-width: 420px) {
+  .role-badge--collapsed { display: none; }
+  .role-badge-list { display: inline-flex; }
+  .role-badge-list .role-badge--chip { display: inline-flex; }
+}
+

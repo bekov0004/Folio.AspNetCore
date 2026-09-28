@@ -11,6 +11,11 @@
    development of the prototype itself. */
 const SPECTRA_CONFIG   = window.__SPECTRA_CONFIG__ || {};
 const OPENAPI_FILE     = SPECTRA_CONFIG.specUrl || 'eip-openapi.json';
+/* Roles required per endpoint ("METHOD /path" -> string[]), read straight
+   from the host app's own [Authorize(Roles=...)] — see FolioRoleReader in
+   the package. Empty when Folio isn't embedded (local prototype dev) or
+   the host app declares no role-restricted endpoints. */
+let FOLIO_ROLES          = {};
 let apiSpec             = null;
 let currentEndpointKey  = null;
 let currentEndpointData = null;
@@ -341,6 +346,13 @@ async function initApp() {
       logoutBtn.style.display = '';
     }
   }
+
+  /* Best-effort — an older Folio version, a 404, or plain local dev
+     without the package should never block loading the spec itself. */
+  try {
+    const rolesResponse = await fetch('api/roles');
+    if (rolesResponse.ok) FOLIO_ROLES = await rolesResponse.json();
+  } catch { /* no roles endpoint available — fine, badges just won't show */ }
 
   try {
     const response = await fetch(OPENAPI_FILE);

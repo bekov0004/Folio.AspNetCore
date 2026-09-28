@@ -389,6 +389,84 @@ pre {
 .param-location-label--query  { color: #10d9a0; }
 .param-location-label--header { color: #ffb347; }
 
+/* ── Access icon — roles required, read straight from the host app's
+   own [Authorize(Roles=...)] (see FolioRoleReader). Shown next to the
+   endpoint header; hover/focus reveals a small popover with the role
+   list. The popover's RIGHT edge is pinned to the icon's right edge
+   (not centered) so it grows leftward — the icon sits at the far right
+   of the header row, and a centered popover would get clipped by the
+   card's edge. ── */
+.access-icon-wrap { position: relative; display: inline-flex; flex-shrink: 0; }
+
+.access-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  color: #ffb347; background: rgba(255,179,71,0.1);
+  border: 1px solid rgba(255,179,71,0.25);
+  cursor: default;
+  transition: background 0.15s, border-color 0.15s;
+}
+.access-icon:hover, .access-icon:focus-visible {
+  background: rgba(255,179,71,0.18);
+  border-color: rgba(255,179,71,0.4);
+  outline: none;
+}
+.access-icon svg { width: 14px; height: 14px; }
+
+.access-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 150px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  z-index: 60;
+}
+.access-popover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 8px;
+  border: 5px solid transparent;
+  border-bottom-color: var(--border-strong);
+}
+@media (hover: hover) and (pointer: fine) {
+  .access-icon-wrap:hover .access-popover {
+    opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto;
+  }
+}
+.access-icon-wrap:focus-within .access-popover {
+  opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto;
+}
+
+.access-popover__title {
+  font-family: 'Lexend', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.access-popover__roles { display: flex; flex-wrap: wrap; gap: 5px; }
+.access-popover .role-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600; font-size: 11px;
+  letter-spacing: 0.3px;
+  border-radius: 5px; padding: 3px 8px;
+  color: #ffb347; background: rgba(255,179,71,0.1);
+  border: 1px solid rgba(255,179,71,0.25);
+  white-space: nowrap;
+}
+
 .param-card-desc {
   flex-basis: 100%;
   font-size: 11px;
