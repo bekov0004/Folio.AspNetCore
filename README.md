@@ -4,6 +4,8 @@ An embeddable OpenAPI documentation and testing UI for ASP.NET Core,
 packaged as middleware: no separate infrastructure, no static hosting —
 just a NuGet package.
 
+![Folio in action](https://raw.githubusercontent.com/bekov0004/Folio.AspNetCore/main/docs/demo.gif)
+
 ## Screenshots
 
 *Rendered from a sample e-commerce API spec — see [`docs/demo-openapi.json`](docs/demo-openapi.json). Click a thumbnail for the full-size screenshot.*
