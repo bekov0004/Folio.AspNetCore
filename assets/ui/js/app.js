@@ -353,6 +353,22 @@ async function initApp() {
   if (SPECTRA_CONFIG.showSchema === false) {
     document.getElementById('schemaViewBtn')?.style.setProperty('display', 'none');
   }
+  if (SPECTRA_CONFIG.showHome === false) {
+    document.getElementById('homeBtn')?.style.setProperty('display', 'none');
+  }
+  if (SPECTRA_CONFIG.showEnvironmentSwitcher === false) {
+    document.getElementById('mobileEnvBtn')?.style.setProperty('display', 'none');
+  }
+  if (SPECTRA_CONFIG.showGlobalHeaders === false) {
+    document.getElementById('globalHeadersBtn')?.style.setProperty('display', 'none');
+  }
+  if (SPECTRA_CONFIG.showExamples === false) {
+    document.getElementById('saveExampleBtn')?.style.setProperty('display', 'none');
+    document.getElementById('showExamplesBtn')?.style.setProperty('display', 'none');
+  }
+  if (SPECTRA_CONFIG.showShare === false) {
+    document.getElementById('shareBtn')?.style.setProperty('display', 'none');
+  }
 
   /* Best-effort — an older Folio version, a 404, or plain local dev
      without the package should never block loading the spec itself.

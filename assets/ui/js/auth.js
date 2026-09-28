@@ -24,6 +24,7 @@ function _authIsSchemeConfigured(schemeName, scheme, cfg) {
 function _updateAuthorizeBtnState() {
   const btn = document.getElementById('authorizeBtn');
   if (!btn) return;
+  if (SPECTRA_CONFIG.showAuthorize === false) { btn.style.display = 'none'; return; }
   const schemes = apiSpec?.components?.securitySchemes || {};
   const names = Object.keys(schemes);
   btn.style.display = names.length ? '' : 'none';

@@ -258,7 +258,9 @@ public sealed class FolioMiddleware
 
         var config = new FolioClientConfig(
             options.SpecUrl, options.Title, logoutUrl,
-            options.ShowTryItOut, options.ShowRoles, options.ShowCodeGenerator, options.ShowSchema);
+            options.ShowTryItOut, options.ShowRoles, options.ShowCodeGenerator, options.ShowSchema,
+            options.ShowHome, options.ShowEnvironmentSwitcher, options.ShowGlobalHeaders,
+            options.ShowAuthorize, options.ShowExamples, options.ShowShare);
         var configJson = JsonSerializer.Serialize(config, FolioJsonContext.Default.FolioClientConfig);
         var configScript = $"<script>window.__SPECTRA_CONFIG__ = {configJson};</script>";
 
@@ -274,7 +276,9 @@ public sealed class FolioMiddleware
 
 internal sealed record FolioClientConfig(
     string SpecUrl, string? Title, string? LogoutUrl,
-    bool ShowTryItOut, bool ShowRoles, bool ShowCodeGenerator, bool ShowSchema);
+    bool ShowTryItOut, bool ShowRoles, bool ShowCodeGenerator, bool ShowSchema,
+    bool ShowHome, bool ShowEnvironmentSwitcher, bool ShowGlobalHeaders,
+    bool ShowAuthorize, bool ShowExamples, bool ShowShare);
 
 [JsonSerializable(typeof(FolioClientConfig))]
 [JsonSerializable(typeof(Dictionary<string, string[]>))]

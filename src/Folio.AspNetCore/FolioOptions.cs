@@ -91,6 +91,45 @@ public sealed class FolioOptions
     public bool ShowSchema { get; set; } = true;
 
     /// <summary>
+    /// Shows the "Home" button in the toolbar, which returns to the welcome
+    /// screen. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowHome { get; set; } = true;
+
+    /// <summary>
+    /// Shows the environment switcher (the base-URL selector, including
+    /// adding/editing environments and importing servers from the spec).
+    /// Default: <c>true</c>.
+    /// </summary>
+    public bool ShowEnvironmentSwitcher { get; set; } = true;
+
+    /// <summary>
+    /// Shows the "Global headers" button, letting users configure headers
+    /// sent with every request (e.g. an API key), independent of any single
+    /// endpoint. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowGlobalHeaders { get; set; } = true;
+
+    /// <summary>
+    /// Shows the "Authorization" button for the spec's OpenAPI security
+    /// schemes (e.g. entering a bearer token). Only ever appears when the
+    /// spec actually declares a security scheme — this flag lets you force
+    /// it off even then. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowAuthorize { get; set; } = true;
+
+    /// <summary>
+    /// Shows "Save example" and "My examples" — saving a filled-in request
+    /// as a named, reusable example. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowExamples { get; set; } = true;
+
+    /// <summary>
+    /// Shows the "Copy endpoint link" (share) button. Default: <c>true</c>.
+    /// </summary>
+    public bool ShowShare { get; set; } = true;
+
+    /// <summary>
     /// Binds settings from an external configuration source (e.g.
     /// <c>appsettings.json</c>) onto these options. Folio never reads
     /// configuration on its own — this only runs when you call it

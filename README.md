@@ -86,6 +86,12 @@ against the spec's security schemes (`apiKey`, HTTP Bearer/Basic).
 | `ShowRoles`          | `true`                | Shows the role badges/popover read from your endpoints' own `[Authorize(Roles = "...")]`. |
 | `ShowCodeGenerator`  | `true`                | Shows the multi-language code generator (cURL/JS/Python/C#/Go/PowerShell) in the request panel. |
 | `ShowSchema`         | `true`                | Shows the Schema button for viewing a model's JSON schema. |
+| `ShowHome`           | `true`                | Shows the "Home" button (returns to the welcome screen). |
+| `ShowEnvironmentSwitcher` | `true`            | Shows the environment/base-URL switcher (add/edit environments, import servers from the spec). |
+| `ShowGlobalHeaders`  | `true`                | Shows the "Global headers" button (headers sent with every request). |
+| `ShowAuthorize`      | `true`                | Shows the OpenAPI security scheme "Authorization" button, when the spec declares one. |
+| `ShowExamples`       | `true`                | Shows "Save example" / "My examples". |
+| `ShowShare`          | `true`                | Shows the "Copy endpoint link" button. |
 
 Set any of these directly in code:
 
