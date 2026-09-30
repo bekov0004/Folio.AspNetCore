@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- Syntax highlighting for the generated code snippets (cURL/JS/Python/C#/Go/PowerShell) — comments, strings, numbers, keywords, object keys, function/method calls, and type names, via a small dependency-free tokenizer (`highlightCode()`) that reuses the existing JSON-highlighter color palette
+
+---
+
 ## [1.2.0] - 2026-09-30
 
 ### Added
