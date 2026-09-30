@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.2.0] - 2026-09-30
 
 ### Added
 - Per-endpoint role display — shows which roles are required to access each endpoint, read directly from the host app's own `[Authorize(Roles=...)]`/`.RequireAuthorization(...)` metadata via `EndpointDataSource` (no OpenAPI spec changes or host-side configuration needed; nothing is invented, it's a live mirror of the real code). Shown as a badge in the sidebar (collapsing to "Role +N" on narrow panels, expanding to the full role list once there's room) and as a hover/focus popover on the endpoint detail page
