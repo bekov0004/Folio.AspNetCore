@@ -12,6 +12,16 @@
 }
 .dark .code-block { background: #0d1117; border-color: #1a2340; color: #a8b8e8; }
 
+/* ── Code generator syntax highlighting — see highlightCode() in utils.js.
+   Reuses the JSON token palette (variables.css) since the two share the
+   same visual language, plus a dedicated keyword color. ── */
+.code-keyword { color: var(--code-keyword); font-weight: 600; }
+.code-comment { color: var(--text-muted); font-style: italic; }
+.code-string  { color: var(--json-str); }
+.code-number  { color: var(--json-num); }
+.code-flag,
+.code-variable { color: var(--json-key); }
+
 pre {
   margin: 0; white-space: pre-wrap; word-wrap: break-word;
   color: #24292f; font-size: 12.5px;

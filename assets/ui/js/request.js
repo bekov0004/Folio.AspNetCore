@@ -874,7 +874,8 @@ function _renderCodegen() {
   const pre = document.getElementById('codegenPre');
   if (!pre || !_lastRequestSnapshot) return;
   const { method, url, headers, json, multipart, form } = _lastRequestSnapshot;
-  pre.textContent = CODEGEN_LANGS[_codegenLang].build(method, url, headers, { json, multipart, form });
+  const code = CODEGEN_LANGS[_codegenLang].build(method, url, headers, { json, multipart, form });
+  pre.innerHTML = highlightCode(code, _codegenLang);
 }
 
 /**

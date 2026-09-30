@@ -28,6 +28,91 @@ function highlightJson(str) {
 }
 
 /**
+ * Lightweight per-language token rules for highlightCode() below — not a
+ * full parser, just enough to color the shapes the code generator actually
+ * emits (see CODEGEN_LANGS/_build* in request.js): comments, quoted
+ * strings, numbers, a short keyword list, and (for cURL) CLI flags.
+ */
+const CODE_LANG_RULES = {
+  bash: {
+    string: /`(?:[^`\\]|\\.)*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/,
+    keywords: ['curl'],
+    flag: /(?<=\s|^)--?[A-Za-z][\w-]*/,
+  },
+  javascript: {
+    comment: /\/\/.*/,
+    string: /`(?:[^`\\]|\\.)*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/,
+    keywords: ['const', 'let', 'var', 'async', 'await', 'function', 'return', 'new',
+      'if', 'else', 'try', 'catch', 'throw', 'typeof', 'import', 'from', 'export',
+      'of', 'in', 'null', 'true', 'false'],
+  },
+  python: {
+    comment: /#.*/,
+    // Triple-quote alternatives must come first — otherwise the plain
+    // double/single-quote pattern matches an empty "" at the start of a
+    // """...""" block and desyncs the rest of the highlighting.
+    string: /"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/,
+    keywords: ['import', 'from', 'as', 'return', 'if', 'elif', 'else', 'for', 'while',
+      'try', 'except', 'def', 'class', 'with', 'None', 'True', 'False', 'and', 'or',
+      'not', 'in', 'is'],
+  },
+  csharp: {
+    comment: /\/\/.*/,
+    string: /@"(?:[^"]|"")*"|\$"(?:[^"\\]|\\.)*"|"(?:[^"\\]|\\.)*"/,
+    keywords: ['using', 'var', 'new', 'public', 'private', 'static', 'async', 'await',
+      'return', 'class', 'void', 'string', 'int', 'bool', 'namespace', 'null', 'true', 'false'],
+  },
+  go: {
+    comment: /\/\/.*/,
+    string: /`[^`]*`|"(?:[^"\\]|\\.)*"/,
+    keywords: ['package', 'import', 'func', 'var', 'const', 'if', 'else', 'for', 'range',
+      'return', 'struct', 'type', 'nil', 'true', 'false'],
+  },
+  powershell: {
+    comment: /#.*/,
+    string: /@'[\s\S]*?'@|@"[\s\S]*?"@|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/,
+    keywords: ['param', 'if', 'else', 'foreach', 'return'],
+    variable: /\$[A-Za-z_]\w*/,
+  },
+};
+CODE_LANG_RULES.curl = CODE_LANG_RULES.bash;
+
+/**
+ * Syntax-highlights a code snippet for one of CODEGEN_LANGS (request.js) —
+ * returns HTML with span tags, same approach as highlightJson() above but
+ * driven by a small per-language rule set instead of a fixed grammar.
+ */
+function highlightCode(code, lang) {
+  const rules = CODE_LANG_RULES[lang] || CODE_LANG_RULES.bash;
+
+  const parts = [];
+  if (rules.comment)  parts.push(`(?<comment>${rules.comment.source})`);
+  if (rules.string)   parts.push(`(?<string>${rules.string.source})`);
+  if (rules.variable) parts.push(`(?<variable>${rules.variable.source})`);
+  parts.push(`(?<number>\\b\\d+(?:\\.\\d+)?\\b)`);
+  if (rules.keywords?.length) parts.push(`(?<keyword>\\b(?:${rules.keywords.join('|')})\\b)`);
+  if (rules.flag) parts.push(`(?<flag>${rules.flag.source})`);
+
+  const re = new RegExp(parts.join('|'), 'g');
+  let out = '';
+  let last = 0;
+  let m;
+  while ((m = re.exec(code))) {
+    out += escapeHtml(code.slice(last, m.index));
+    const cls = m.groups.comment  ? 'code-comment'
+      : m.groups.string   ? 'code-string'
+      : m.groups.variable ? 'code-variable'
+      : m.groups.number   ? 'code-number'
+      : m.groups.keyword  ? 'code-keyword'
+      : 'code-flag';
+    out += `<span class="${cls}">${escapeHtml(m[0])}</span>`;
+    last = re.lastIndex;
+  }
+  out += escapeHtml(code.slice(last));
+  return out;
+}
+
+/**
  * Safely serializes an object to an indented JSON string
  */
 function safeJsonStringify(o) {

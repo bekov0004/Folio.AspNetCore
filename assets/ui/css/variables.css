@@ -25,6 +25,11 @@
   --json-bool: #d97706;
   --json-null: #9ca3af;
 
+  /* Code generator syntax highlighting — light mode (reuses the JSON
+     palette above for string/number/key-ish tokens, plus a dedicated
+     keyword color since generated code has no JSON equivalent for it) */
+  --code-keyword: #9333ea;
+
   /* JSON editor textarea alignment */
   --ta-font: 'JetBrains Mono', monospace;
   --ta-size: 13px;
@@ -54,6 +59,9 @@
   --json-num:  #f97583;
   --json-bool: #ffab70;
   --json-null: #6a737d;
+
+  /* Code generator syntax highlighting — dark mode */
+  --code-keyword: #c792ea;
 }
 
 /* ── Reset ── */
@@ -64,7 +72,6 @@ body {
   background: var(--bg-base);
   color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
-  overflow-x: hidden;
 }
 
 ::selection { background: var(--accent-glow); }
