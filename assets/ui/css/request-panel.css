@@ -14,13 +14,16 @@
 
 /* ── Code generator syntax highlighting — see highlightCode() in utils.js.
    Reuses the JSON token palette (variables.css) since the two share the
-   same visual language, plus a dedicated keyword color. ── */
+   same visual language, plus dedicated colors for keyword/call/type. ── */
 .code-keyword { color: var(--code-keyword); font-weight: 600; }
+.code-call    { color: var(--code-call); }
+.code-type    { color: var(--code-type); }
 .code-comment { color: var(--text-muted); font-style: italic; }
 .code-string  { color: var(--json-str); }
 .code-number  { color: var(--json-num); }
 .code-flag,
-.code-variable { color: var(--json-key); }
+.code-variable,
+.code-property { color: var(--json-key); }
 
 pre {
   margin: 0; white-space: pre-wrap; word-wrap: break-word;

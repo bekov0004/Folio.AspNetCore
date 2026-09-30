@@ -73,6 +73,11 @@ const CODE_LANG_RULES = {
     string: /@'[\s\S]*?'@|@"[\s\S]*?"@|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/,
     keywords: ['param', 'if', 'else', 'foreach', 'return'],
     variable: /\$[A-Za-z_]\w*/,
+    // Named parameters (-Uri, -Method, ...) — same shape as a CLI flag,
+    // so without this they'd otherwise get picked up by the generic
+    // PascalCase "type" rule below instead, which reads oddly for what's
+    // really an argument name.
+    flag: /(?<=\s|^)--?[A-Za-z][\w-]*/,
   },
 };
 CODE_LANG_RULES.curl = CODE_LANG_RULES.bash;
@@ -89,9 +94,21 @@ function highlightCode(code, lang) {
   if (rules.comment)  parts.push(`(?<comment>${rules.comment.source})`);
   if (rules.string)   parts.push(`(?<string>${rules.string.source})`);
   if (rules.variable) parts.push(`(?<variable>${rules.variable.source})`);
+  // Bare object/struct key before a colon — "method:" in JS, but not Go's
+  // ":=" (negative lookahead excludes both "::" and ":=" so it doesn't
+  // grab the left side of a short-variable-declaration).
+  parts.push(`(?<property>\\b[A-Za-z_]\\w*(?=\\s*:(?![:=])))`);
   parts.push(`(?<number>\\b\\d+(?:\\.\\d+)?\\b)`);
   if (rules.keywords?.length) parts.push(`(?<keyword>\\b(?:${rules.keywords.join('|')})\\b)`);
+  // Function/method call — any identifier immediately followed by "(".
+  // Generic across all six languages, so it lives outside the per-language
+  // rule set below.
+  parts.push(`(?<call>\\b[A-Za-z_]\\w*(?=\\())`);
   if (rules.flag) parts.push(`(?<flag>${rules.flag.source})`);
+  // PascalCase/ALLCAPS identifier not already claimed above — types,
+  // class names (HttpClient, StringContent), and incidentally HTTP
+  // methods (GET, POST) written bare rather than as a quoted string.
+  parts.push(`(?<type>\\b[A-Z][A-Za-z0-9_]*\\b)`);
 
   const re = new RegExp(parts.join('|'), 'g');
   let out = '';
@@ -102,9 +119,12 @@ function highlightCode(code, lang) {
     const cls = m.groups.comment  ? 'code-comment'
       : m.groups.string   ? 'code-string'
       : m.groups.variable ? 'code-variable'
+      : m.groups.property ? 'code-property'
       : m.groups.number   ? 'code-number'
       : m.groups.keyword  ? 'code-keyword'
-      : 'code-flag';
+      : m.groups.call     ? 'code-call'
+      : m.groups.flag     ? 'code-flag'
+      : 'code-type';
     out += `<span class="${cls}">${escapeHtml(m[0])}</span>`;
     last = re.lastIndex;
   }

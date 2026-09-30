@@ -26,9 +26,11 @@
   --json-null: #9ca3af;
 
   /* Code generator syntax highlighting — light mode (reuses the JSON
-     palette above for string/number/key-ish tokens, plus a dedicated
-     keyword color since generated code has no JSON equivalent for it) */
+     palette above for string/number/key-ish tokens, plus dedicated colors
+     for the token kinds JSON has no equivalent for) */
   --code-keyword: #9333ea;
+  --code-call: #b45309;
+  --code-type: #0e7490;
 
   /* JSON editor textarea alignment */
   --ta-font: 'JetBrains Mono', monospace;
@@ -62,6 +64,8 @@
 
   /* Code generator syntax highlighting — dark mode */
   --code-keyword: #c792ea;
+  --code-call: #dcdcaa;
+  --code-type: #4ec9c9;
 }
 
 /* ── Reset ── */
