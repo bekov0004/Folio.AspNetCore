@@ -71,11 +71,19 @@
 /* ── Reset ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* html + body both set overflow-x: hidden — body's alone isn't always
+   propagated to the viewport/scrolling element, so a couple of stray
+   pixels (e.g. from header/env-panel icon button tooltips, whose ::after
+   content can extend past the viewport edge even while invisible) could
+   still produce a real, scrollable gap without the rule on html too. */
+html { overflow-x: hidden; }
+
 body {
   font-family: 'Lexend', sans-serif;
   background: var(--bg-base);
   color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
 }
 
 ::selection { background: var(--accent-glow); }
