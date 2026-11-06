@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.3.0] - 2026-11-06
 
 ### Added
 - Syntax highlighting for the generated code snippets (cURL/JS/Python/C#/Go/PowerShell) — comments, strings, numbers, keywords, object keys, function/method calls, and type names, via a small dependency-free tokenizer (`highlightCode()`) that reuses the existing JSON-highlighter color palette
+
+### Fixed
+- Horizontal page scroll had crept back in — `html`/`body` lost their `overflow-x: hidden` at some point (likely during the modular CSS split), letting header icon-button tooltips push a couple of stray pixels past the viewport edge. Restored on both `html` and `body`
 
 ---
 
